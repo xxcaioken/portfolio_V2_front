@@ -4,7 +4,7 @@ export default function Footer() {
       <div className="container-page text-sm text-stone-600 dark:text-stone-400 flex flex-col sm:flex-row items-center justify-between gap-2">
         <p>© {new Date().getFullYear()} Caio Kormives. Todos os direitos reservados.</p>
         <p>
-          Feito com <span aria-hidden="true">❤</span> usando React + Tailwind.
+          Feito usando React + Tailwind.
         </p>
       </div>
     </footer>
