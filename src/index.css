@@ -1,0 +1,38 @@
+@import "tailwindcss";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+  /* Paleta bege personalizada */
+  --color-beige-50:  #faf7f2;
+  --color-beige-100: #f4eee3;
+  --color-beige-200: #e9dcc3;
+  --color-beige-300: #d9c5a0;
+  --color-beige-400: #c6ac7c;
+  --color-beige-500: #b09257;
+  --color-beige-600: #947941;
+  --color-beige-700: #786134;
+  --color-beige-800: #5f4d2a;
+  --color-beige-900: #4e4023;
+
+  --color-sand-100: #f6efe6;
+  --color-sand-300: #decfb9;
+  --color-sand-500: #bfa27a;
+  --color-sand-700: #8c6e49;
+  --color-sand-900: #5a4831;
+}
+
+@layer base {
+  html { scroll-behavior: smooth; }
+  body {
+    @apply bg-beige-50 text-stone-900 antialiased dark:bg-stone-950 dark:text-stone-100;
+  }
+}
+
+@utility container-page {
+  @apply mx-auto max-w-6xl px-6 sm:px-8;
+}
+
+@utility section {
+  @apply container-page py-16 sm:py-24;
+}

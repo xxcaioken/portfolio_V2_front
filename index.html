@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <script>
+      (function() {
+        try {
+          var stored = localStorage.getItem('theme');
+          var systemDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var theme = stored === 'light' || stored === 'dark' ? stored : (systemDark ? 'dark' : 'light');
+          if (theme === 'dark') document.documentElement.classList.add('dark');
+          else document.documentElement.classList.remove('dark');
+        } catch (e) {}
+      })();
+    </script>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Caio Kormives — Desenvolvedor Full Stack</title>
+    <meta name="description" content="Portfólio de Caio Kormives, Desenvolvedor Full Stack com experiência em React, .NET, Elixir, GraphQL e mais." />
+    <meta name="theme-color" content="#b09257" />
+    <meta property="og:title" content="Caio Kormives — Desenvolvedor Full Stack" />
+    <meta property="og:description" content="Portfólio com habilidades, experiências e projetos. React, .NET, Elixir, GraphQL." />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="/" />
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
