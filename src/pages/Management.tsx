@@ -5,6 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import { useEffect, useMemo, useState } from 'react';
 import { experiencesApi } from '../lib/experiences';
 import type { CreateExperienceRequest, ExperienceResponse, UpdateExperienceRequest } from '../types/experience';
+import { useCallback } from 'react';
 
 const Management = () => {
   const navigate = useNavigate();
@@ -12,7 +13,7 @@ const Management = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [editingId, setEditingId] = useState<string | null>(null);
-  const [form, setForm] = useState<CreateExperienceRequest>({ company: '', role: '', period: '', bullets: [] });
+  const [form, setForm] = useState<CreateExperienceRequest>({ company: '', role: '', startDate: '', endDate: null, bullets: [] });
 
   const logout = () => {
     clearAuthenticated();
@@ -36,11 +37,20 @@ const Management = () => {
 
   useEffect(() => { void loadExperiences(); }, []);
 
+  const formatRange = useCallback((start: string, end?: string | null) => {
+    const toMMYYYY = (iso: string) => {
+      const [y, m] = iso.split('-');
+      return `${m}/${y}`;
+    };
+    if (!start) return '';
+    return `${toMMYYYY(start)} – ${end ? toMMYYYY(end) : 'Atual'}`;
+  }, []);
+
   const isEditing = useMemo(() => Boolean(editingId), [editingId]);
 
   const resetForm = () => {
     setEditingId(null);
-    setForm({ company: '', role: '', period: '', bullets: [] });
+    setForm({ company: '', role: '', startDate: '', endDate: null, bullets: [] });
   }
 
   const setFormFromModel = (model: ExperienceResponse) => {
@@ -48,7 +58,8 @@ const Management = () => {
     setForm({
       company: model.company,
       role: model.role,
-      period: model.period,
+      startDate: model.startDate,
+      endDate: model.endDate ?? null,
       bullets: model.bullets ?? [],
     });
   }
@@ -56,17 +67,22 @@ const Management = () => {
   const onSubmit = async () => {
     setLoading(true);
     setError(null);
+    console.log(form);
     try {
       const payload: CreateExperienceRequest | UpdateExperienceRequest = {
         company: form.company.trim(),
         role: form.role.trim(),
-        period: form.period.trim(),
+        startDate: form.startDate,
+        endDate: form.endDate && form.endDate.length > 0 ? form.endDate : null,
         bullets: (form.bullets ?? []).map(b => b.trim()).filter(Boolean),
       };
+      console.log(payload);
       if (isEditing && editingId) {
         await experiencesApi.update(editingId, payload);
       } else {
-        await experiencesApi.create(payload);
+        console.log('create');
+        const response = await experiencesApi.create(payload);
+        console.log(response);
       }
       await loadExperiences();
       resetForm();
@@ -112,8 +128,23 @@ const Management = () => {
                 <label className="text-sm" htmlFor="role">Cargo</label>
                 <input id="role" className="rounded-md border px-3 py-2 text-sm dark:bg-stone-900/70" value={form.role} onChange={(e) => setForm({ ...form, role: e.target.value })} />
 
-                <label className="text-sm" htmlFor="period">Período</label>
-                <input id="period" className="rounded-md border px-3 py-2 text-sm dark:bg-stone-900/70" value={form.period} onChange={(e) => setForm({ ...form, period: e.target.value })} />
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <div className="flex flex-col gap-1">
+                    <label className="text-sm" htmlFor="startDate">Início</label>
+                    <input id="startDate" type="date" className="rounded-md border px-3 py-2 text-sm dark:bg-stone-900/70"
+                      value={form.startDate} onChange={(e) => setForm({ ...form, startDate: e.target.value })} />
+                  </div>
+                  <div className="flex flex-col gap-1">
+                    <label className="text-sm" htmlFor="endDate">Fim</label>
+                    <input id="endDate" type="date" className="rounded-md border px-3 py-2 text-sm dark:bg-stone-900/70"
+                      value={form.endDate ?? ''} onChange={(e) => setForm({ ...form, endDate: e.target.value || null })} />
+                    <label className="mt-1 inline-flex items-center gap-2 text-xs">
+                      <input type="checkbox" checked={!form.endDate}
+                        onChange={(e) => setForm({ ...form, endDate: e.target.checked ? null : form.startDate })} />
+                      Atual
+                    </label>
+                  </div>
+                </div>
 
                 <label className="text-sm" htmlFor="bullets">Pontos (um por linha)</label>
                 <textarea id="bullets" rows={6} className="rounded-md border px-3 py-2 text-sm dark:bg-stone-900/70" value={form.bullets.join('\n')} onChange={(e) => setForm({ ...form, bullets: e.target.value.split('\n') })} />
@@ -135,7 +166,7 @@ const Management = () => {
                     <li key={e.id} className="rounded border p-3 flex items-start justify-between gap-3">
                       <div>
                         <p className="font-medium">{e.company} — {e.role}</p>
-                        <p className="text-xs text-stone-600 dark:text-stone-400">{e.period}</p>
+                        <p className="text-xs text-stone-600 dark:text-stone-400">{formatRange(e.startDate, e.endDate)}</p>
                         {(e.bullets?.length ?? 0) > 0 && (
                           <ul className="list-disc ml-5 mt-1 text-sm">
                             {(e.bullets ?? []).map((b, idx) => (<li key={idx}>{b}</li>))}
