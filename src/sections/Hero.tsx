@@ -2,7 +2,7 @@ import Button from '../components/ui/Button';
 import Badge from '../components/ui/Badge';
 import { profile } from '../data/profile';
 
-export default function Hero() {
+const Hero = () => {
   return (
     <section id="home" className="section">
       <div className="flex flex-col items-start gap-6">
@@ -28,5 +28,7 @@ export default function Hero() {
     </section>
   );
 }
+
+export default Hero;
 
 

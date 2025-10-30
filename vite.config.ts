@@ -8,10 +8,11 @@ export default defineConfig(({ mode }) => {
     plugins: [react()],
     server: {
       proxy: {
-        '/auth': {
+        '/api': {
           target: env.VITE_DEV_API_PROXY_TARGET || 'http://localhost:6000',
           changeOrigin: true,
           secure: false,
+          rewrite: (path) => path.replace(/^\/api/, ''),
         },
       },
     },

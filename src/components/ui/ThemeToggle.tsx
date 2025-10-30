@@ -2,12 +2,12 @@ import { useEffect, useState } from 'react';
 
 type Theme = 'light' | 'dark';
 
-function getSystemTheme(): Theme {
+const getSystemTheme = (): Theme => {
   if (typeof window === 'undefined') return 'light';
   return window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
 }
 
-function getStoredTheme(): Theme | null {
+const getStoredTheme = (): Theme | null => {
   try {
     const t = localStorage.getItem('theme');
     if (t === 'light' || t === 'dark') return t;
@@ -17,13 +17,13 @@ function getStoredTheme(): Theme | null {
   }
 }
 
-function applyTheme(t: Theme) {
+const applyTheme = (t: Theme) => {
   const root = document.documentElement;
   if (t === 'dark') root.classList.add('dark');
   else root.classList.remove('dark');
 }
 
-export default function ThemeToggle() {
+const ThemeToggle = () => {
   const [theme, setTheme] = useState<Theme>(() => getStoredTheme() ?? getSystemTheme());
 
   useEffect(() => {
@@ -66,5 +66,7 @@ export default function ThemeToggle() {
     </button>
   );
 }
+
+export default ThemeToggle;
 
 

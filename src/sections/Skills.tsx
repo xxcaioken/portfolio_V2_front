@@ -1,7 +1,7 @@
 import Card from '../components/ui/Card';
 import { profile } from '../data/profile';
 
-export default function Skills() {
+const Skills = () => {
   const s = profile.skills;
   return (
     <section id="skills" className="section">
@@ -16,5 +16,7 @@ export default function Skills() {
     </section>
   );
 }
+
+export default Skills;
 
 

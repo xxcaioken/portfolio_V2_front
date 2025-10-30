@@ -1,7 +1,7 @@
 import Card from '../components/ui/Card';
 import { profile } from '../data/profile';
 
-export default function Education() {
+const Education = () => {
   return (
     <section id="education" className="section">
       <h2 className="mb-8 text-2xl font-bold text-stone-900 dark:text-stone-100">Educação, Certificações e Idiomas</h2>
@@ -31,5 +31,7 @@ export default function Education() {
     </section>
   );
 }
+
+export default Education;
 
 

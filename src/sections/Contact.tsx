@@ -1,7 +1,7 @@
 import Button from '../components/ui/Button';
 import { profile } from '../data/profile';
 
-export default function Contact() {
+const Contact = () => {
   return (
     <section id="contact" className="section">
       <h2 className="mb-6 text-2xl font-bold text-stone-900">Contato</h2>
@@ -24,5 +24,7 @@ export default function Contact() {
     </section>
   );
 }
+
+export default Contact;
 
 

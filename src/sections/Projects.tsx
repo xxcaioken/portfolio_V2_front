@@ -2,7 +2,7 @@ import Card from '../components/ui/Card';
 import Badge from '../components/ui/Badge';
 import { profile } from '../data/profile';
 
-export default function Projects() {
+const Projects = () => {
   return (
     <section id="projects" className="section">
       <h2 className="mb-8 text-2xl font-bold text-stone-900">Projetos</h2>
@@ -31,5 +31,7 @@ export default function Projects() {
     </section>
   );
 }
+
+export default Projects;
 
 

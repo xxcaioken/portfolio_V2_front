@@ -7,7 +7,7 @@ import Education from './sections/Education';
 import Projects from './sections/Projects';
 import Contact from './sections/Contact';
 
-export default function App() {
+const App = () => {
   return (
     <div className="min-h-screen">
       <a
@@ -29,3 +29,5 @@ export default function App() {
     </div>
   );
 }
+
+export default App;

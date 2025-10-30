@@ -1,11 +1,11 @@
 import { getAuthToken } from './storage';
-import { Role } from '../types/Roles';
+import { Role } from '../types/role';
 
 const RoleType = {
   Role: 'http://schemas.microsoft.com/ws/2008/06/identity/claims/role',
 } as const;
 
-function getRolesFromToken(): string[] {
+const getRolesFromToken = (): string[] => {
   const token = getAuthToken();
   if (!token) return [];
   const [, payloadB64] = token.split('.');
@@ -20,7 +20,7 @@ function getRolesFromToken(): string[] {
   }
 }
 
-export function isAdmin(): boolean {
+export const isAdmin = (): boolean => {
   const roles = getRolesFromToken();
   if (roles.length === 0) return false;
   return roles.includes(Role.Admin);

@@ -2,7 +2,7 @@ import type { PropsWithChildren, ReactNode } from 'react';
 
 type CardProps = PropsWithChildren<{ title?: ReactNode; footer?: ReactNode; className?: string }>; 
 
-export default function Card({ title, footer, className = '', children }: CardProps) {
+const Card = ({ title, footer, className = '', children }: CardProps) => {
   return (
     <div className={`rounded-lg border border-beige-200/70 bg-white/80 p-5 shadow-sm dark:border-stone-800/70 dark:bg-stone-900/70 ${className}`}>
       {title ? <h3 className="mb-2 text-base font-semibold text-stone-900 dark:text-stone-100">{title}</h3> : null}
@@ -11,5 +11,7 @@ export default function Card({ title, footer, className = '', children }: CardPr
     </div>
   );
 }
+
+export default Card;
 
 

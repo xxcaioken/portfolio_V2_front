@@ -1,11 +1,13 @@
 import { clearAuthenticated, getAuthHeader } from '../auth/storage';
 
 const BASE_URL = import.meta.env.VITE_API_BASE_URL || '';
+const DEV_PREFIX = BASE_URL ? '' : '/api';
 
 async function request<T>(path: string, init: RequestInit = {}): Promise<T> {
-  const res = await fetch(`${BASE_URL}${path}`, {
+  const res = await fetch(`${BASE_URL}${DEV_PREFIX}${path}`, {
     headers: {
       'Content-Type': 'application/json',
+      'Accept': 'application/json',
       ...getAuthHeader(),
       ...(init.headers || {}),
     },

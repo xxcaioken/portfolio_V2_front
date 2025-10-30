@@ -1,6 +1,6 @@
 import ThemeToggle from '../ui/ThemeToggle';
 
-export default function Header() {
+const Header = () => {
   return (
     <header className="sticky top-0 z-40 border-b border-beige-200/60 bg-beige-50/70 backdrop-blur dark:border-stone-800/60 dark:bg-stone-950/60">
       <nav className="container-page flex h-14 items-center justify-between" role="navigation" aria-label="Navegação principal">
@@ -18,5 +18,7 @@ export default function Header() {
     </header>
   );
 }
+
+export default Header;
 
 

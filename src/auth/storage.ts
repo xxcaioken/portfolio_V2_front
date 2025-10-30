@@ -6,7 +6,7 @@ export type AuthData = {
   username?: string;
 };
 
-export function getAuthData(): AuthData | null {
+export const getAuthData = (): AuthData | null => {
   try {
     const raw = localStorage.getItem(AUTH_STORAGE_KEY);
     if (!raw) return null;
@@ -27,7 +27,7 @@ export function getAuthData(): AuthData | null {
   }
 }
 
-export function isAuthenticated(): boolean {
+export const isAuthenticated = (): boolean => {
   const data = getAuthData();
   if (!data)
     return false;
@@ -41,7 +41,7 @@ export function isAuthenticated(): boolean {
   return expiresTs > Date.now();
 }
 
-export function setAuthenticated(data: AuthData): void {
+export const setAuthenticated = (data: AuthData): void => {
   try {
     localStorage.setItem(AUTH_STORAGE_KEY, JSON.stringify(data));
   } catch (error) {
@@ -50,7 +50,7 @@ export function setAuthenticated(data: AuthData): void {
   }
 }
 
-export function clearAuthenticated(): void {
+export const clearAuthenticated = (): void => {
   try {
     localStorage.removeItem(AUTH_STORAGE_KEY);
   } catch {
@@ -58,7 +58,7 @@ export function clearAuthenticated(): void {
   }
 }
 
-export function getAuthToken(): string | null {
+export const getAuthToken = (): string | null => {
   const data = getAuthData();
   if (!data) return null;
   const expiresTs = new Date(data.expiresAt).getTime();
@@ -66,7 +66,7 @@ export function getAuthToken(): string | null {
   return data.token;
 }
 
-export function getAuthHeader(): Record<string, string> {
+export const getAuthHeader = (): Record<string, string> => {
   const token = getAuthToken();
   return token ? { Authorization: `Bearer ${token}` } : {};
 }

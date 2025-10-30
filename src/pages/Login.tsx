@@ -7,7 +7,7 @@ import Card from '../components/ui/Card';
 import { api } from '../lib/api';
 import type { AuthResponse, LoginRequest } from '../types/auth';
 
-export default function Login() {
+const Login = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
@@ -17,7 +17,7 @@ export default function Login() {
   const location = useLocation() as ReturnType<typeof useLocation> & { state?: LocationState };
   const from = location.state?.from?.pathname || '/management';
 
-  async function onSubmit(e: FormEvent) {
+  const onSubmit = async (e: FormEvent) => {
     e.preventDefault();
     setError(null);
     if (!username.trim() || !password.trim()) {
@@ -82,3 +82,5 @@ export default function Login() {
     </div>
   );
 }
+
+export default Login;

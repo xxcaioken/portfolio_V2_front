@@ -1,7 +1,7 @@
 import Card from '../components/ui/Card';
 import { profile } from '../data/profile';
 
-export default function Experience() {
+const Experience = () => {
   return (
     <section id="experience" className="section">
       <h2 className="mb-8 text-2xl font-bold text-stone-900">Experiência</h2>
@@ -27,5 +27,7 @@ export default function Experience() {
     </section>
   );
 }
+
+export default Experience;
 
 
