@@ -27,7 +27,6 @@ async function request<T>(path: string, init: RequestInit = {}): Promise<T> {
     throw new Error(message);
   }
 
-  // Trata respostas sem corpo
   const contentType = res.headers.get('content-type') || '';
   if (res.status === 204 || !contentType.includes('application/json')) {
     return undefined as unknown as T;
