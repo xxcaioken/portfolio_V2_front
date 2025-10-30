@@ -4,6 +4,8 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { setAuthenticated } from '../auth/storage';
 import Button from '../components/ui/Button';
 import Card from '../components/ui/Card';
+import { api } from '../lib/api';
+import type { AuthResponse, LoginRequest } from '../types/auth';
 
 export default function Login() {
   const [username, setUsername] = useState('');
@@ -24,28 +26,9 @@ export default function Login() {
     }
     setLoading(true);
     try {
-      const baseUrl = import.meta.env.VITE_API_BASE_URL || '';
-      const res = await fetch(`${baseUrl}/auth/login`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username, password }),
-      });
-
-      if (!res.ok) {
-        if (res.status === 400) {
-          const body = await res.json().catch(() => ({}));
-          throw new Error(body?.error || 'Requisição inválida');
-        }
-        if (res.status === 401) {
-          throw new Error('Credenciais incorretas');
-        }
-        throw new Error('Falha ao autenticar');
-      }
-
-      const data = await res.json();
-      if (!data?.token || !data?.expiresAt) {
-        throw new Error('Resposta inesperada do servidor');
-      }
+      const body: LoginRequest = { username, password };
+      const data = await api.post<AuthResponse>('/auth/login', body);
+      if (!data?.token || !data?.expiresAt) throw new Error('Resposta inesperada do servidor');
 
       setAuthenticated({ token: data.token, expiresAt: data.expiresAt, username });
       navigate(from, { replace: true });
