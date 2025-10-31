@@ -19,10 +19,11 @@ import AditionalInfoForm from '../components/management/aditional/AditionalInfoF
 import AditionalInfoItem from '../components/management/aditional/AditionalInfoItem';
 import KeyTaskForm from '../components/management/keytask/KeyTaskForm';
 import KeyTaskItem from '../components/management/keytask/KeyTaskItem';
+import AboutSection from '../components/management/about/AboutSection';
 
 const Management = () => {
   const navigate = useNavigate();
-  const [section, setSection] = useState<'experience' | 'hability' | 'aditional' | 'keytask'>('experience');
+  const [section, setSection] = useState<'experience' | 'hability' | 'aditional' | 'keytask' | 'about'>('experience');
   const logout = () => {
     clearAuthenticated();
     navigate('/login', { replace: true });
@@ -39,6 +40,9 @@ const Management = () => {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
           <aside className="md:col-span-1">
             <nav className="flex md:flex-col gap-2" aria-label="Seleção de seção">
+              <button type="button" className={`rounded border px-3 py-2 text-sm ${section === 'about' ? 'bg-beige-200/60 dark:bg-stone-800/60' : 'bg-white dark:bg-stone-900/70'}`} onClick={() => setSection('about')}>
+                Sobre mim
+              </button>
               <button type="button" className={`rounded border px-3 py-2 text-sm ${section === 'experience' ? 'bg-beige-200/60 dark:bg-stone-800/60' : 'bg-white dark:bg-stone-900/70'}`} onClick={() => setSection('experience')}>
                 Experiências
               </button>
@@ -56,6 +60,8 @@ const Management = () => {
           <section className="md:col-span-3">
             {(() => {
               switch (section) {
+                case 'about':
+                  return <AboutSection />;
                 case 'experience':
                   return (
                     <CrudCard<ExperienceResponse, CreateExperienceRequest | UpdateExperienceRequest>

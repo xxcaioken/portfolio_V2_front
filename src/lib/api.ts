@@ -8,9 +8,10 @@ const BASE_URL = import.meta.env.VITE_API_BASE_URL || '';
 const DEV_PREFIX = BASE_URL ? '' : '/api';
 
 async function request<T>(path: string, init: RequestInit = {}): Promise<T> {
+  const isForm = typeof FormData !== 'undefined' && init.body instanceof FormData;
   const res = await fetch(`${BASE_URL}${DEV_PREFIX}${path}`, {
     headers: {
-      'Content-Type': 'application/json',
+      ...(isForm ? {} : { 'Content-Type': 'application/json' }),
       'Accept': 'application/json',
       ...getAuthHeader(),
       ...(init.headers || {}),
@@ -50,6 +51,8 @@ export const api = {
   patch: <T>(path: string, body?: unknown, init?: RequestInit) =>
     request<T>(path, { method: 'PATCH', body: body ? JSON.stringify(body) : undefined, ...init }),
   delete: <T>(path: string, init?: RequestInit) => request<T>(path, { method: 'DELETE', ...init }),
+  upload: <T>(path: string, form: FormData, init?: RequestInit) =>
+    request<T>(path, { method: 'POST', body: form, ...init }),
 };
 
 export const loadSectionData = async (responseType: typeof aditionalInfosApi| typeof experiencesApi| typeof keyTasksApi| typeof habilitiesApi, setLoading: (loading: boolean) => void, setError: (error: string| null) => void) => {
