@@ -4,9 +4,10 @@ export const toMonthYear = (iso: string): string => {
   return `${m}/${y}`;
 };
 
-export const formatRange = (start: string, end?: string | null): string => {
-  if (!start) return '';
-  return `${toMonthYear(start)} – ${end ? toMonthYear(end) : 'Atual'}`;
+export const formatRange = (start?: string | null, end?: string | null): string | null => {
+  if (start && end)
+    return `${toMonthYear(start)} – ${end ? toMonthYear(end) : 'Atual'}`;
+  return null;
 };
 
 

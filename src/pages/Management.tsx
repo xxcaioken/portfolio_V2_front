@@ -6,16 +6,20 @@ import { useState } from 'react';
 import { CrudCard } from '../components/management/CrudCard';
 import { experiencesApi } from '../lib/experiences';
 import { habilitiesApi } from '../lib/habilities';
+import { aditionalInfosApi } from '../lib/aditionalInfos';
 import type { CreateExperienceRequest, ExperienceResponse, UpdateExperienceRequest } from '../types/experience';
 import type { CreateHabilityRequest, HabilityResponse, UpdateHabilityRequest } from '../types/hability';
+import type { AditionalInfoResponse, CreateAditionalInfoRequest, UpdateAditionalInfoRequest } from '../types/aditionalInfo';
 import ExperienceForm from '../components/management/experience/ExperienceForm';
 import ExperienceItem from '../components/management/experience/ExperienceItem';
 import HabilityForm from '../components/management/hability/HabilityForm';
 import HabilityItem from '../components/management/hability/HabilityItem';
+import AditionalInfoForm from '../components/management/aditional/AditionalInfoForm';
+import AditionalInfoItem from '../components/management/aditional/AditionalInfoItem';
 
 const Management = () => {
   const navigate = useNavigate();
-  const [section, setSection] = useState<'experience' | 'hability'>('experience');
+  const [section, setSection] = useState<'experience' | 'hability' | 'aditional'>('experience');
   const logout = () => {
     clearAuthenticated();
     navigate('/login', { replace: true });
@@ -37,6 +41,9 @@ const Management = () => {
               </button>
               <button type="button" className={`rounded border px-3 py-2 text-sm ${section === 'hability' ? 'bg-beige-200/60 dark:bg-stone-800/60' : 'bg-white dark:bg-stone-900/70'}`} onClick={() => setSection('hability')}>
                 Habilidades
+              </button>
+              <button type="button" className={`rounded border px-3 py-2 text-sm ${section === 'aditional' ? 'bg-beige-200/60 dark:bg-stone-800/60' : 'bg-white dark:bg-stone-900/70'}`} onClick={() => setSection('aditional')}>
+                Info Adicionais
               </button>
             </nav>
           </aside>
@@ -77,6 +84,24 @@ const Management = () => {
                       setFormFromItem={(it) => ({ hability: it.hability, badge: it.badge, bullets: it.bullets ?? [] })}
                       renderForm={(f, setF) => (<HabilityForm form={f} setForm={setF} isEditing={false} />)}
                       renderItem={(e) => (<HabilityItem item={e} />)}
+                    />
+                  );
+                case 'aditional':
+                  return (
+                    <CrudCard<AditionalInfoResponse, CreateAditionalInfoRequest | UpdateAditionalInfoRequest>
+                      title="Informações Adicionais"
+                      fetchList={async () => {
+                        const data = await aditionalInfosApi.list();
+                        return (Array.isArray(data) ? data : []).map(e => ({ ...e, bullets: e.bullets ?? [] }));
+                      }}
+                      createItem={(body) => aditionalInfosApi.create(body)}
+                      updateItem={(id, body) => aditionalInfosApi.update(id, body)}
+                      deleteItem={(id) => aditionalInfosApi.delete(id)}
+                      initialForm={{ aditionalInfo: '', level: '', startDate: null, endDate: null, bullets: [] }}
+                      getId={(it) => it.id}
+                      setFormFromItem={(it) => ({ aditionalInfo: it.aditionalInfo, level: it.level ?? '', startDate: it.startDate ?? null, endDate: it.endDate ?? null, bullets: it.bullets ?? [] })}
+                      renderForm={(f, setF) => (<AditionalInfoForm form={f} setForm={setF} isEditing={false} />)}
+                      renderItem={(e) => (<AditionalInfoItem item={e} />)}
                     />
                   );
                 default:
