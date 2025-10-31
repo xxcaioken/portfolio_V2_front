@@ -6,8 +6,11 @@ import Button from '../components/ui/Button';
 import Card from '../components/ui/Card';
 import { api } from '../lib/api';
 import type { AuthResponse, LoginRequest } from '../types/auth';
+import { FiArrowLeft } from 'react-icons/fi';
+import { useI18n } from '../i18n';
 
 const Login = () => {
+  const { t } = useI18n();
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
@@ -21,7 +24,7 @@ const Login = () => {
     e.preventDefault();
     setError(null);
     if (!username.trim() || !password.trim()) {
-      setError('Informe usuário e senha.');
+      setError(t('auth.requireCredentials') || '');
       return;
     }
     setLoading(true);
@@ -34,7 +37,7 @@ const Login = () => {
       navigate(from, { replace: true });
     } catch (err: unknown) {
       if (err instanceof Error) setError(err.message);
-      else setError('Erro ao autenticar');
+      else setError(t('auth.errorGeneric') || '');
     } finally {
       setLoading(false);
     }
@@ -43,9 +46,12 @@ const Login = () => {
   return (
     <div className="min-h-screen flex items-center justify-center px-6">
       <div className="w-full max-w-md">
-        <Card title="Acesso de Management">
+        <div className="mb-3">
+        <Button className="cursor-pointer " onClick={() => navigate('/')} variant="ghost" aria-label="Voltar"><FiArrowLeft /></Button>
+        </div>
+        <Card title={t('auth.login')} >
           <form onSubmit={onSubmit} className="flex flex-col gap-3">
-            <label className="text-sm" htmlFor="username">Usuário</label>
+            <label className="text-sm" htmlFor="username">{t('auth.username') || 'Usuário'}</label>
             <input
               id="username"
               name="username"
@@ -57,7 +63,7 @@ const Login = () => {
               aria-required
             />
 
-            <label className="text-sm" htmlFor="password">Senha</label>
+            <label className="text-sm" htmlFor="password">{t('auth.password') || 'Senha'}</label>
             <input
               id="password"
               name="password"
@@ -74,7 +80,7 @@ const Login = () => {
             )}
 
             <Button type="submit" className="mt-1" disabled={loading}>
-              {loading ? 'Entrando...' : 'Entrar'}
+              {loading ? (t('auth.loggingIn') || 'Entrando...') : (t('auth.login') || 'Entrar')}
             </Button>
           </form>
         </Card>

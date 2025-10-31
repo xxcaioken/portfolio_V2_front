@@ -6,8 +6,10 @@ import type { KeyTaskResponse } from '../types/keytask';
 import { findTechKey } from '../icons/tech.data';
 import { TechIcon } from '../icons/TechIcon';
 import { loadSectionData } from '../lib/api';
+import { useI18n } from '../i18n';
 
 const Projects = () => {
+  const { t } = useI18n();
   const [items, setItems] = useState<KeyTaskResponse[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -21,7 +23,7 @@ const Projects = () => {
 
   return (
     <section id="projects" className="section">
-      <h2 className="mb-8 text-2xl font-bold text-stone-900">Projetos</h2>
+      <h2 className="mb-8 text-2xl font-bold text-stone-900">{t('nav.projects')}</h2>
       {error && <p className="text-sm text-red-600" role="alert">{error}</p>}
       {loading ? (
         <p className="text-sm">Carregando...</p>

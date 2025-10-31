@@ -5,8 +5,10 @@ import type { HabilityResponse } from '../types/hability';
 import { findTechKey } from '../icons/tech.data';
 import { TechIcon } from '../icons/TechIcon';
 import { loadSectionData } from '../lib/api';
+import { useI18n } from '../i18n';
 
 const Skills = () => {
+  const { t } = useI18n();
   const [items, setItems] = useState<HabilityResponse[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -20,7 +22,7 @@ const Skills = () => {
 
   return (
     <section id="skills" className="section">
-      <h2 className="mb-8 text-2xl font-bold text-stone-900">Habilidades</h2>
+      <h2 className="mb-8 text-2xl font-bold text-stone-900">{t('nav.skills')}</h2>
       {error && <p className="text-sm text-red-600" role="alert">{error}</p>}
       {loading ? (
         <p className="text-sm">Carregando...</p>

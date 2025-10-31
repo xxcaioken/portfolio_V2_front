@@ -1,0 +1,20 @@
+{
+  "nav.skills": "Habilidades",
+  "nav.experience": "Experiência",
+  "nav.projects": "Tarefas Chave",
+  "nav.contact": "Contato",
+  "nav.aditional": "Informações Adicionais",
+  "nav.management": "Management",
+  "auth.login": "Login",
+  "auth.logout": "Sair",
+  "auth.username": "Usuário",
+  "auth.password": "Senha",
+  "auth.requireCredentials": "Informe usuário e senha.",
+  "auth.errorGeneric": "Erro ao autenticar",
+  "auth.loggingIn": "Entrando...",
+  "hero.contactEmail": "Contato por Email",
+  "mgmt.title": "Management",
+  "common.back": "Voltar"
+}
+
+

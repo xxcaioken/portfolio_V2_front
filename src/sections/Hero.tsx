@@ -2,9 +2,11 @@ import Button from '../components/ui/Button';
 import Badge from '../components/ui/Badge';
 import { useAbout } from '../lib/useAbout';
 import { resolveApiUrl } from '../lib/api';
+import { useI18n } from '../i18n';
 
 const Hero = () => {
   const { about } = useAbout();
+  const { t } = useI18n();
   return (
     <section id="home" className="section">
       <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
@@ -21,7 +23,7 @@ const Hero = () => {
           </p>
           <div className="flex flex-wrap gap-3">
             <a href={`mailto:${about?.email || ''}`}>
-              <Button>Contato por Email</Button>
+              <Button>{t('hero.contactEmail')}</Button>
             </a>
             {about?.linkedin ? (
               <a href={about.linkedin} target="_blank" rel="noreferrer">

@@ -4,8 +4,10 @@ import { aditionalInfosApi } from '../lib/aditionalInfos';
 import type { AditionalInfoResponse } from '../types/aditionalInfo';
 import { formatRange } from '../lib/date';
 import { loadSectionData } from '../lib/api';
+import { useI18n } from '../i18n';
 
 const Education = () => {
+  const { t } = useI18n();
   const [items, setItems] = useState<AditionalInfoResponse[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -19,7 +21,7 @@ const Education = () => {
 
   return (
     <section id="education" className="section">
-      <h2 className="mb-8 text-2xl font-bold text-stone-900 dark:text-stone-100">Aditional Information</h2>
+      <h2 className="mb-8 text-2xl font-bold text-stone-900 dark:text-stone-100">{t('nav.aditional') || 'Informações Adicionais'}</h2>
       {error && <p className="text-sm text-red-600" role="alert">{error}</p>}
       {loading ? (
         <p className="text-sm">Carregando...</p>

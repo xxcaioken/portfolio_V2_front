@@ -20,44 +20,33 @@ import AditionalInfoItem from '../components/management/aditional/AditionalInfoI
 import KeyTaskForm from '../components/management/keytask/KeyTaskForm';
 import KeyTaskItem from '../components/management/keytask/KeyTaskItem';
 import AboutSection from '../components/management/about/AboutSection';
+import { FiArrowLeft } from 'react-icons/fi';
+import { useI18n } from '../i18n';
 
 const Management = () => {
+  const { t } = useI18n();
   const navigate = useNavigate();
-  const [section, setSection] = useState<'experience' | 'hability' | 'aditional' | 'keytask' | 'about'>('experience');
+  const [section, setSection] = useState<'experience' | 'hability' | 'aditional' | 'keytask' | 'about'>('about');
   const logout = () => {
     clearAuthenticated();
     navigate('/login', { replace: true });
   }
 
   return (
-    <div className="min-h-screen px-6 py-8">
+    <div className="min-h-screen px-6 py-8">      
       <div className="w-full max-w-4xl mx-auto space-y-6">
         <div className="flex items-center justify-between">
-          <h1 className="text-2xl font-bold">Management</h1>
-          <Button onClick={logout} variant="ghost">Sair</Button>
+          <span>
+            <Button className="cursor-pointer " onClick={() => navigate('/')} variant="ghost" aria-label={t('common.back')}><FiArrowLeft /></Button>
+          </span>
+          <h1 className="text-2xl font-bold">{t('mgmt.title')}</h1>
+          <div className="flex items-center gap-2">
+            <Button onClick={logout} variant="ghost">{t('auth.logout')}</Button>
+          </div>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-          <aside className="md:col-span-1">
-            <nav className="flex md:flex-col gap-2" aria-label="Seleção de seção">
-              <button type="button" className={`rounded border px-3 py-2 text-sm ${section === 'about' ? 'bg-beige-200/60 dark:bg-stone-800/60' : 'bg-white dark:bg-stone-900/70'}`} onClick={() => setSection('about')}>
-                Sobre mim
-              </button>
-              <button type="button" className={`rounded border px-3 py-2 text-sm ${section === 'experience' ? 'bg-beige-200/60 dark:bg-stone-800/60' : 'bg-white dark:bg-stone-900/70'}`} onClick={() => setSection('experience')}>
-                Experiências
-              </button>
-              <button type="button" className={`rounded border px-3 py-2 text-sm ${section === 'hability' ? 'bg-beige-200/60 dark:bg-stone-800/60' : 'bg-white dark:bg-stone-900/70'}`} onClick={() => setSection('hability')}>
-                Habilidades
-              </button>
-              <button type="button" className={`rounded border px-3 py-2 text-sm ${section === 'aditional' ? 'bg-beige-200/60 dark:bg-stone-800/60' : 'bg-white dark:bg-stone-900/70'}`} onClick={() => setSection('aditional')}>
-                Info Adicionais
-              </button>
-              <button type="button" className={`rounded border px-3 py-2 text-sm ${section === 'keytask' ? 'bg-beige-200/60 dark:bg-stone-800/60' : 'bg-white dark:bg-stone-900/70'}`} onClick={() => setSection('keytask')}>
-                Key Tasks
-              </button>
-            </nav>
-          </aside>
-          <section className="md:col-span-3">
+        <section className="md:col-span-3">
             {(() => {
               switch (section) {
                 case 'about':
@@ -139,6 +128,25 @@ const Management = () => {
               }
             })()}
           </section>
+          <aside className="md:col-span-1">
+            <nav className="flex md:flex-col gap-2" aria-label="Seleção de seção">
+              <button type="button" className={`rounded border px-3 py-2 text-sm ${section === 'about' ? 'bg-beige-200/60 dark:bg-stone-800/60' : 'bg-white dark:bg-stone-900/70'}`} onClick={() => setSection('about')}>
+                {t('about.me') || 'Sobre mim'}
+              </button>
+              <button type="button" className={`rounded border px-3 py-2 text-sm ${section === 'experience' ? 'bg-beige-200/60 dark:bg-stone-800/60' : 'bg-white dark:bg-stone-900/70'}`} onClick={() => setSection('experience')}>
+                {t('nav.experience')}
+              </button>
+              <button type="button" className={`rounded border px-3 py-2 text-sm ${section === 'hability' ? 'bg-beige-200/60 dark:bg-stone-800/60' : 'bg-white dark:bg-stone-900/70'}`} onClick={() => setSection('hability')}>
+                {t('nav.skills')}
+              </button>
+              <button type="button" className={`rounded border px-3 py-2 text-sm ${section === 'aditional' ? 'bg-beige-200/60 dark:bg-stone-800/60' : 'bg-white dark:bg-stone-900/70'}`} onClick={() => setSection('aditional')}>
+                {t('nav.aditional') || 'Info Adicionais'}
+              </button>
+              <button type="button" className={`rounded border px-3 py-2 text-sm ${section === 'keytask' ? 'bg-beige-200/60 dark:bg-stone-800/60' : 'bg-white dark:bg-stone-900/70'}`} onClick={() => setSection('keytask')}>
+                {t('nav.projects')}
+              </button>
+            </nav>
+          </aside>
         </div>
       </div>
     </div>

@@ -4,8 +4,10 @@ import { experiencesApi } from '../lib/experiences';
 import type { ExperienceResponse } from '../types/experience';
 import { formatRange } from '../lib/date';
 import { loadSectionData } from '../lib/api';
+import { useI18n } from '../i18n';
 
 const Experience = () => {
+  const { t } = useI18n();
   const [items, setItems] = useState<ExperienceResponse[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -19,7 +21,7 @@ const Experience = () => {
 
   return (
     <section id="experience" className="section">
-      <h2 className="mb-8 text-2xl font-bold text-stone-900">Experiência</h2>
+      <h2 className="mb-8 text-2xl font-bold text-stone-900">{t('nav.experience')}</h2>
       {error && <p className="text-sm text-red-600" role="alert">{error}</p>}
       {loading ? (
         <p className="text-sm">Carregando...</p>

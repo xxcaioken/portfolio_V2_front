@@ -1,10 +1,12 @@
 import Button from '../components/ui/Button';
 import { profile } from '../data/profile';
+import { useI18n } from '../i18n';
 
 const Contact = () => {
+  const { t } = useI18n();
   return (
     <section id="contact" className="section">
-      <h2 className="mb-6 text-2xl font-bold text-stone-900">Contato</h2>
+      <h2 className="mb-6 text-2xl font-bold text-stone-900">{t('nav.contact')}</h2>
       <div className="flex flex-col gap-3 text-stone-700">
         <p>
           Email: <a className="text-beige-700 hover:underline" href={`mailto:${profile.email}`}>{profile.email}</a>
