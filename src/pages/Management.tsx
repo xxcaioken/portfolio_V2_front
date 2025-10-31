@@ -6,19 +6,23 @@ import { CrudCard } from '../components/management/CrudCard';
 import { experiencesApi } from '../lib/experiences';
 import { habilitiesApi } from '../lib/habilities';
 import { aditionalInfosApi } from '../lib/aditionalInfos';
+import { keyTasksApi } from '../lib/keytasks';
 import type { CreateExperienceRequest, ExperienceResponse, UpdateExperienceRequest } from '../types/experience';
 import type { CreateHabilityRequest, HabilityResponse, UpdateHabilityRequest } from '../types/hability';
 import type { AditionalInfoResponse, CreateAditionalInfoRequest, UpdateAditionalInfoRequest } from '../types/aditionalInfo';
+import type { KeyTaskResponse, CreateKeyTaskRequest, UpdateKeyTaskRequest } from '../types/keytask';
 import ExperienceForm from '../components/management/experience/ExperienceForm';
 import ExperienceItem from '../components/management/experience/ExperienceItem';
 import HabilityForm from '../components/management/hability/HabilityForm';
 import HabilityItem from '../components/management/hability/HabilityItem';
 import AditionalInfoForm from '../components/management/aditional/AditionalInfoForm';
 import AditionalInfoItem from '../components/management/aditional/AditionalInfoItem';
+import KeyTaskForm from '../components/management/keytask/KeyTaskForm';
+import KeyTaskItem from '../components/management/keytask/KeyTaskItem';
 
 const Management = () => {
   const navigate = useNavigate();
-  const [section, setSection] = useState<'experience' | 'hability' | 'aditional'>('experience');
+  const [section, setSection] = useState<'experience' | 'hability' | 'aditional' | 'keytask'>('experience');
   const logout = () => {
     clearAuthenticated();
     navigate('/login', { replace: true });
@@ -43,6 +47,9 @@ const Management = () => {
               </button>
               <button type="button" className={`rounded border px-3 py-2 text-sm ${section === 'aditional' ? 'bg-beige-200/60 dark:bg-stone-800/60' : 'bg-white dark:bg-stone-900/70'}`} onClick={() => setSection('aditional')}>
                 Info Adicionais
+              </button>
+              <button type="button" className={`rounded border px-3 py-2 text-sm ${section === 'keytask' ? 'bg-beige-200/60 dark:bg-stone-800/60' : 'bg-white dark:bg-stone-900/70'}`} onClick={() => setSection('keytask')}>
+                Key Tasks
               </button>
             </nav>
           </aside>
@@ -101,6 +108,24 @@ const Management = () => {
                       setFormFromItem={(it) => ({ aditionalInfo: it.aditionalInfo, bullets: it.bullets ?? [] })}
                       renderForm={(f, setF) => (<AditionalInfoForm form={f} setForm={setF} isEditing={false} />)}
                       renderItem={(e) => (<AditionalInfoItem item={e} />)}
+                    />
+                  );
+                case 'keytask':
+                  return (
+                    <CrudCard<KeyTaskResponse, CreateKeyTaskRequest | UpdateKeyTaskRequest>
+                      title="Key Tasks"
+                      fetchList={async () => {
+                        const data = await keyTasksApi.list();
+                        return Array.isArray(data) ? data : [];
+                      }}
+                      createItem={(body) => keyTasksApi.create(body)}
+                      updateItem={(id, body) => keyTasksApi.update(id, body)}
+                      deleteItem={(id) => keyTasksApi.delete(id)}
+                      initialForm={{ keyTask: '', description: '', technologies: [] }}
+                      getId={(it) => it.id}
+                      setFormFromItem={(it) => ({ keyTask: it.keyTask, description: it.description, technologies: it.technologies ?? [] })}
+                      renderForm={(f, setF) => (<KeyTaskForm form={f} setForm={setF} isEditing={false} />)}
+                      renderItem={(e) => (<KeyTaskItem item={e} />)}
                     />
                   );
                 default:
