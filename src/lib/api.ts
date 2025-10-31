@@ -1,4 +1,8 @@
 import { clearAuthenticated, getAuthHeader } from '../auth/storage';
+import { aditionalInfosApi } from './aditionalInfos';
+import { experiencesApi } from './experiences';
+import { habilitiesApi } from './habilities';
+import { keyTasksApi } from './keytasks';
 
 const BASE_URL = import.meta.env.VITE_API_BASE_URL || '';
 const DEV_PREFIX = BASE_URL ? '' : '/api';
@@ -48,4 +52,10 @@ export const api = {
   delete: <T>(path: string, init?: RequestInit) => request<T>(path, { method: 'DELETE', ...init }),
 };
 
-
+export const loadSectionData = async (responseType: typeof aditionalInfosApi| typeof experiencesApi| typeof keyTasksApi| typeof habilitiesApi, setLoading: (loading: boolean) => void, setError: (error: string| null) => void) => {
+  setLoading(true);
+  setError(null);
+  const data =  await responseType.list();
+  setLoading(false);
+  return Array.isArray(data) ? data : [];
+};

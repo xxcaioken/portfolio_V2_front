@@ -3,6 +3,7 @@ import Card from '../components/ui/Card';
 import { experiencesApi } from '../lib/experiences';
 import type { ExperienceResponse } from '../types/experience';
 import { formatRange } from '../lib/date';
+import { loadSectionData } from '../lib/api';
 
 const Experience = () => {
   const [items, setItems] = useState<ExperienceResponse[]>([]);
@@ -11,17 +12,7 @@ const Experience = () => {
 
   useEffect(() => {
     const load = async () => {
-      setLoading(true);
-      setError(null);
-      try {
-        const data = await experiencesApi.list();
-        const arr = Array.isArray(data) ? data : [];
-        setItems(arr.map(e => ({ ...e, bullets: e.bullets ?? [] })));
-      } catch (e) {
-        setError(e instanceof Error ? e.message : 'Erro ao carregar experiências');
-      } finally {
-        setLoading(false);
-      }
+    setItems(await loadSectionData(experiencesApi,setLoading, setError) as ExperienceResponse[]);
     };
     void load();
   }, []);
