@@ -94,7 +94,7 @@ export function CrudCard<TItem, TForm>({
     <Card title={title}>
       {error && <p className="text-sm text-red-600 mb-2" role="alert">{error}</p>}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div>
+        <div className="border-2 border-beige-50 rounded-md p-4 shadow">
           <h2 className="font-semibold mb-2">{isEditing ? 'Editar' : 'Novo'}</h2>
           <div className="flex flex-col gap-3">
             {renderForm(form, setForm, isEditing)}
