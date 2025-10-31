@@ -13,7 +13,7 @@ export type AboutResponse = {
   email: string;
   linkedin: string;
   github?: string | null;
-  avatarUrl?: string | null;
+  avatarUrl: string;
   footerNote?: string | null;
   socials: SocialLink[];
 };

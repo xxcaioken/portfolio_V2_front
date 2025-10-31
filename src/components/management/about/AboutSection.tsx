@@ -4,7 +4,8 @@ import Button from '../../ui/Button';
 import { aboutApi } from '../../../lib/about';
 import type { SocialLink, UpdateAboutRequest } from '../../../types/about';
 import { TECH_KEYS } from '../../../icons/tech.data';
-import { api } from '../../../lib/api';
+import type { AboutResponse } from '../../../types/about';
+import { resolveApiUrl } from '../../../lib/api';
 
 const empty: UpdateAboutRequest = {
   name: '', title: '', summary: '', location: '', phone: '', email: '', linkedin: '', github: '', avatarUrl: '', footerNote: '', socials: [],
@@ -37,9 +38,8 @@ const AboutSection = (): ReactElement => {
   const removeSocial = (idx: number) => setForm(prev => ({ ...prev, socials: prev.socials.filter((_, i) => i !== idx) }));
 
   const uploadAvatar = async (file: File) => {
-    const fd = new FormData(); fd.append('file', file);
-    const data = await api.upload<{ url: string }>('/management/uploads/image', fd);
-    setForm(prev => ({ ...prev, avatarUrl: data.url }));
+    const data: AboutResponse = await aboutApi.uploadAvatar(file);
+    setForm(prev => ({ ...prev, ...data }));
   };
 
   const onSubmit = async () => {
@@ -74,7 +74,7 @@ const AboutSection = (): ReactElement => {
         <div className="flex flex-col gap-3">
           <label className="text-sm">Avatar</label>
           <input type="file" accept="image/*" onChange={(e) => { const f = e.target.files?.[0]; if (f) void uploadAvatar(f); }} />
-          {form.avatarUrl ? <img src={form.avatarUrl} alt="Avatar" className="h-24 w-24 rounded-full object-cover" /> : null}
+          {form.avatarUrl ? <img src={resolveApiUrl(form.avatarUrl)} alt="Avatar" className="h-24 w-24 rounded-full object-cover" /> : null}
           <div className="flex items-center justify-between mt-2">
             <h3 className="text-sm font-semibold">Links sociais</h3>
             <button type="button" className="text-sm underline" onClick={addSocial}>Adicionar</button>

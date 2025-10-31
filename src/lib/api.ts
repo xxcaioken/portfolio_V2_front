@@ -55,6 +55,15 @@ export const api = {
     request<T>(path, { method: 'POST', body: form, ...init }),
 };
 
+export const resolveApiUrl = (path: string): string => {
+  if (!path) return '';
+  const lower = path.toLowerCase();
+  if (lower.startsWith('http://') || lower.startsWith('https://') || lower.startsWith('data:') || lower.startsWith('blob:')) {
+    return path;
+  }
+  return `${BASE_URL}${DEV_PREFIX}${path.startsWith('/') ? path : `/${path}`}`;
+};
+
 export const loadSectionData = async (responseType: typeof aditionalInfosApi| typeof experiencesApi| typeof keyTasksApi| typeof habilitiesApi, setLoading: (loading: boolean) => void, setError: (error: string| null) => void) => {
   setLoading(true);
   setError(null);
