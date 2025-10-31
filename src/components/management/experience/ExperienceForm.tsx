@@ -10,6 +10,16 @@ type Props = {
 };
 
 const ExperienceForm = ({ form: f, setForm: setF }: Props): ReactElement => {
+  const addBullet = () => setF({ ...f, bullets: [...(f.bullets ?? []), ''] });
+  const updateBullet = (idx: number, text: string) => {
+    const next = (f.bullets ?? []).map((b, i) => (i === idx ? text : b));
+    setF({ ...f, bullets: next });
+  };
+  const removeBullet = (idx: number) => {
+    const next = (f.bullets ?? []).filter((_, i) => i !== idx);
+    setF({ ...f, bullets: next });
+  };
+
   return (
     <>
       <label className="text-sm" htmlFor="company">Empresa</label>
@@ -30,8 +40,21 @@ const ExperienceForm = ({ form: f, setForm: setF }: Props): ReactElement => {
           </label>
         </div>
       </div>
-      <label className="text-sm" htmlFor="bullets">Pontos (um por linha)</label>
-      <textarea id="bullets" rows={6} className="rounded-md border px-3 py-2 text-sm dark:bg-stone-900/70" value={(f.bullets ?? []).join('\n')} onChange={(e) => setF({ ...f, bullets: e.target.value.split('\n') })} />
+      <div className="flex items-center justify-between mt-2">
+        <h3 className="text-sm font-semibold">Pontos</h3>
+        <button type="button" className="text-sm underline" onClick={addBullet}>Adicionar ponto</button>
+      </div>
+      <div className="space-y-3">
+        {(f.bullets ?? []).map((text, idx) => (
+          <div key={idx} className="rounded border p-3 space-y-2">
+            <div className="flex items-center justify-between">
+              <span className="text-xs text-stone-500">Ponto #{idx + 1}</span>
+              <button type="button" className="text-xs underline" onClick={() => removeBullet(idx)}>Remover</button>
+            </div>
+            <input id={`exp-bullet-${idx}`} className="rounded-md border px-3 py-2 text-sm dark:bg-stone-900/70" value={text} onChange={(e) => updateBullet(idx, e.target.value)} />
+          </div>
+        ))}
+      </div>
     </>
   );
 };

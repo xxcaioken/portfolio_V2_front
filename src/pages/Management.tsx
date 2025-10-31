@@ -1,5 +1,4 @@
 import Button from '../components/ui/Button';
-// import Card from '../components/ui/Card';
 import { clearAuthenticated } from '../auth/storage';
 import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
@@ -79,9 +78,9 @@ const Management = () => {
                       createItem={(body) => habilitiesApi.create(body)}
                       updateItem={(id, body) => habilitiesApi.update(id, body)}
                       deleteItem={(id) => habilitiesApi.delete(id)}
-                      initialForm={{ hability: '', badge: '', bullets: [] }}
+                      initialForm={{ hability: '', bullets: [] }}
                       getId={(it) => it.id}
-                      setFormFromItem={(it) => ({ hability: it.hability, badge: it.badge, bullets: it.bullets ?? [] })}
+                      setFormFromItem={(it) => ({ hability: it.hability, bullets: it.bullets ?? [] })}
                       renderForm={(f, setF) => (<HabilityForm form={f} setForm={setF} isEditing={false} />)}
                       renderItem={(e) => (<HabilityItem item={e} />)}
                     />
@@ -97,9 +96,9 @@ const Management = () => {
                       createItem={(body) => aditionalInfosApi.create(body)}
                       updateItem={(id, body) => aditionalInfosApi.update(id, body)}
                       deleteItem={(id) => aditionalInfosApi.delete(id)}
-                      initialForm={{ aditionalInfo: '', level: '', startDate: null, endDate: null, bullets: [] }}
+                      initialForm={{ aditionalInfo: '', bullets: [] }}
                       getId={(it) => it.id}
-                      setFormFromItem={(it) => ({ aditionalInfo: it.aditionalInfo, level: it.level ?? '', startDate: it.startDate ?? null, endDate: it.endDate ?? null, bullets: it.bullets ?? [] })}
+                      setFormFromItem={(it) => ({ aditionalInfo: it.aditionalInfo, bullets: it.bullets ?? [] })}
                       renderForm={(f, setF) => (<AditionalInfoForm form={f} setForm={setF} isEditing={false} />)}
                       renderItem={(e) => (<AditionalInfoItem item={e} />)}
                     />

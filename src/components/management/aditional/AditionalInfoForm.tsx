@@ -1,5 +1,5 @@
 import type { Dispatch, ReactElement, SetStateAction } from 'react';
-import type { CreateAditionalInfoRequest, UpdateAditionalInfoRequest } from '../../../types/aditionalInfo';
+import type { AditionalInfoBullet, CreateAditionalInfoRequest, UpdateAditionalInfoRequest } from '../../../types/aditionalInfo';
 
 type FormData = CreateAditionalInfoRequest | UpdateAditionalInfoRequest;
 
@@ -9,33 +9,55 @@ type Props = {
   isEditing: boolean;
 };
 
-const AditionalInfoForm = ({ form: f, setForm: setF }: Props): ReactElement => (
-  <>
-    <label className="text-sm" htmlFor="aditionalInfo">Informação</label>
-    <input id="aditionalInfo" className="rounded-md border px-3 py-2 text-sm dark:bg-stone-900/70" value={f.aditionalInfo} onChange={(e) => setF({ ...f, aditionalInfo: e.target.value })} />
+const AditionalInfoForm = ({ form: f, setForm: setF }: Props): ReactElement => {
+  const addBullet = () => setF({ ...f, bullets: [...(f.bullets ?? []), { text: '', level: '', startDate: '', endDate: '' }] });
+  const updateBullet = (idx: number, changes: Partial<AditionalInfoBullet>) => {
+    const next = (f.bullets ?? []).map((b, i) => (i === idx ? { ...b, ...changes } : b));
+    setF({ ...f, bullets: next });
+  };
+  const removeBullet = (idx: number) => {
+    const next = (f.bullets ?? []).filter((_, i) => i !== idx);
+    setF({ ...f, bullets: next });
+  };
 
-    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-      <div className="flex flex-col gap-1">
-        <label className="text-sm" htmlFor="startDate">Início</label>
-        <input id="startDate" type="date" className="rounded-md border px-3 py-2 text-sm dark:bg-stone-900/70" value={f.startDate} onChange={(e) => setF({ ...f, startDate: e.target.value })} />
+  return (
+    <>
+      <label className="text-sm" htmlFor="aditionalInfo">Informação</label>
+      <input id="aditionalInfo" className="rounded-md border px-3 py-2 text-sm dark:bg-stone-900/70" value={f.aditionalInfo} onChange={(e) => setF({ ...f, aditionalInfo: e.target.value })} />
+
+      <div className="flex items-center justify-between mt-2">
+        <h3 className="text-sm font-semibold">Bullets</h3>
+        <button type="button" className="text-sm underline" onClick={addBullet}>Adicionar bullet</button>
       </div>
-      <div className="flex flex-col gap-1">
-        <label className="text-sm" htmlFor="endDate">Fim</label>
-        <input id="endDate" type="date" className="rounded-md border px-3 py-2 text-sm dark:bg-stone-900/70" value={f.endDate ?? ''} onChange={(e) => setF({ ...f, endDate: e.target.value || null })} />
-        <label className="mt-1 inline-flex items-center gap-2 text-xs">
-          <input type="checkbox" checked={!f.endDate} onChange={(e) => setF({ ...f, endDate: e.target.checked ? null : f.startDate })} />
-          Atual
-        </label>
+      <div className="space-y-3">
+        {(f.bullets ?? []).map((b, idx) => (
+          <div key={idx} className="rounded border p-3 space-y-2">
+            <div className="flex items-center justify-between">
+              <span className="text-xs text-stone-500">Bullet #{idx + 1}</span>
+              <button type="button" className="text-xs underline" onClick={() => removeBullet(idx)}>Remover</button>
+            </div>
+            <input id={`text-${idx}`} className="rounded-md border px-3 py-2 text-sm dark:bg-stone-900/70" value={b.text} onChange={(e) => updateBullet(idx, { text: e.target.value })} />
+
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+              <div className="flex flex-col gap-1">
+                <label className="text-sm" htmlFor={`start-${idx}`}>Início</label>
+                <input id={`start-${idx}`} type="date" className="rounded-md border px-3 py-2 text-sm dark:bg-stone-900/70" value={b.startDate ?? ''} onChange={(e) => updateBullet(idx, { startDate: e.target.value || null })} />
+              </div>
+              <div className="flex flex-col gap-1">
+                <label className="text-sm" htmlFor={`end-${idx}`}>Fim</label>
+                <input id={`end-${idx}`} type="date" className="rounded-md border px-3 py-2 text-sm dark:bg-stone-900/70" value={b.endDate ?? ''} onChange={(e) => updateBullet(idx, { endDate: e.target.value || null })} />
+              </div>
+              <div className="flex flex-col gap-1">
+                <label className="text-sm" htmlFor={`level-${idx}`}>Nível</label>
+                <input id={`level-${idx}`} className="rounded-md border px-3 py-2 text-sm dark:bg-stone-900/70" value={b.level ?? ''} onChange={(e) => updateBullet(idx, { level: e.target.value })} />
+              </div>
+            </div>
+          </div>
+        ))}
       </div>
-    </div>
-
-    <label className="text-sm" htmlFor="level">Nível</label>
-    <input id="level" className="rounded-md border px-3 py-2 text-sm dark:bg-stone-900/70" value={f.level} onChange={(e) => setF({ ...f, level: e.target.value })} />
-
-    <label className="text-sm" htmlFor="bulletsAI">Pontos (um por linha)</label>
-    <textarea id="bulletsAI" rows={6} className="rounded-md border px-3 py-2 text-sm dark:bg-stone-900/70" value={(f.bullets ?? []).join('\n')} onChange={(e) => setF({ ...f, bullets: e.target.value.split('\n') })} />
-  </>
-);
+    </>
+  );
+};
 
 export default AditionalInfoForm;
 

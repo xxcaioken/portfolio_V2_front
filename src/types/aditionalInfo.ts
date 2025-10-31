@@ -1,20 +1,21 @@
+export type AditionalInfoBullet = {
+  text: string;
+  level?: string | null;
+  startDate?: string | null;
+  endDate?: string | null;
+};
+
 export type AditionalInfoResponse = {
   id: string;
   aditionalInfo: string;
-  bullets: string[];
-  startDate?: string | null; // yyyy-MM-dd | null
-  endDate?: string | null; // yyyy-MM-dd | null
-  level?: string | null;
+  bullets: AditionalInfoBullet[];
   createdAt: string;
   updatedAt?: string | null;
 };
 
 export type CreateAditionalInfoRequest = {
   aditionalInfo: string;
-  bullets: string[];
-  startDate?: string | null; // yyyy-MM-dd | null
-  endDate?: string | null; // yyyy-MM-dd | null
-  level: string;
+  bullets: AditionalInfoBullet[];
 };
 
 export type UpdateAditionalInfoRequest = CreateAditionalInfoRequest;
