@@ -1,111 +1,24 @@
 import Button from '../components/ui/Button';
-import Card from '../components/ui/Card';
+// import Card from '../components/ui/Card';
 import { clearAuthenticated } from '../auth/storage';
 import { useNavigate } from 'react-router-dom';
-import { useEffect, useMemo, useState } from 'react';
+import { useState } from 'react';
+import { CrudCard } from '../components/management/CrudCard';
 import { experiencesApi } from '../lib/experiences';
+import { habilitiesApi } from '../lib/habilities';
 import type { CreateExperienceRequest, ExperienceResponse, UpdateExperienceRequest } from '../types/experience';
-import { useCallback } from 'react';
+import type { CreateHabilityRequest, HabilityResponse, UpdateHabilityRequest } from '../types/hability';
+import ExperienceForm from '../components/management/experience/ExperienceForm';
+import ExperienceItem from '../components/management/experience/ExperienceItem';
+import HabilityForm from '../components/management/hability/HabilityForm';
+import HabilityItem from '../components/management/hability/HabilityItem';
 
 const Management = () => {
   const navigate = useNavigate();
-  const [experiences, setExperiences] = useState<ExperienceResponse[]>([]);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [editingId, setEditingId] = useState<string | null>(null);
-  const [form, setForm] = useState<CreateExperienceRequest>({ company: '', role: '', startDate: '', endDate: null, bullets: [] });
-
+  const [section, setSection] = useState<'experience' | 'hability'>('experience');
   const logout = () => {
     clearAuthenticated();
     navigate('/login', { replace: true });
-  }
-
-  const loadExperiences = async () => {
-    setLoading(true);
-    setError(null);
-    try {
-      const data = await experiencesApi.list();
-      console.log(data);
-      const arr = Array.isArray(data) ? data : [];
-      setExperiences(arr.map((e) => ({ ...e, bullets: e.bullets ?? [] })));
-    } catch (e) {
-      setError(e instanceof Error ? e.message : 'Erro ao carregar experiências');
-    } finally {
-      setLoading(false);
-    }
-  }
-
-  useEffect(() => { void loadExperiences(); }, []);
-
-  const formatRange = useCallback((start: string, end?: string | null) => {
-    const toMMYYYY = (iso: string) => {
-      const [y, m] = iso.split('-');
-      return `${m}/${y}`;
-    };
-    if (!start) return '';
-    return `${toMMYYYY(start)} – ${end ? toMMYYYY(end) : 'Atual'}`;
-  }, []);
-
-  const isEditing = useMemo(() => Boolean(editingId), [editingId]);
-
-  const resetForm = () => {
-    setEditingId(null);
-    setForm({ company: '', role: '', startDate: '', endDate: null, bullets: [] });
-  }
-
-  const setFormFromModel = (model: ExperienceResponse) => {
-    setEditingId(model.id);
-    setForm({
-      company: model.company,
-      role: model.role,
-      startDate: model.startDate,
-      endDate: model.endDate ?? null,
-      bullets: model.bullets ?? [],
-    });
-  }
-
-  const onSubmit = async () => {
-    setLoading(true);
-    setError(null);
-    console.log(form);
-    try {
-      const payload: CreateExperienceRequest | UpdateExperienceRequest = {
-        company: form.company.trim(),
-        role: form.role.trim(),
-        startDate: form.startDate,
-        endDate: form.endDate && form.endDate.length > 0 ? form.endDate : null,
-        bullets: (form.bullets ?? []).map(b => b.trim()).filter(Boolean),
-      };
-      console.log(payload);
-      if (isEditing && editingId) {
-        await experiencesApi.update(editingId, payload);
-      } else {
-        console.log('create');
-        const response = await experiencesApi.create(payload);
-        console.log(response);
-      }
-      await loadExperiences();
-      resetForm();
-    } catch (e) {
-      setError(e instanceof Error ? e.message : 'Erro ao salvar');
-    } finally {
-      setLoading(false);
-    }
-  }
-
-  const onDelete = async (id: string) => {
-    if (!confirm('Confirma excluir este item?')) return;
-    setLoading(true);
-    setError(null);
-    try {
-      await experiencesApi.delete(id);
-      await loadExperiences();
-      if (editingId === id) resetForm();
-    } catch (e) {
-      setError(e instanceof Error ? e.message : 'Erro ao excluir');
-    } finally {
-      setLoading(false);
-    }
   }
 
   return (
@@ -116,74 +29,62 @@ const Management = () => {
           <Button onClick={logout} variant="ghost">Sair</Button>
         </div>
 
-        <Card title="Experiências">
-          {error && <p className="text-sm text-red-600 mb-2" role="alert">{error}</p>}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div>
-              <h2 className="font-semibold mb-2">{isEditing ? 'Editar experiência' : 'Nova experiência'}</h2>
-              <div className="flex flex-col gap-3">
-                <label className="text-sm" htmlFor="company">Empresa</label>
-                <input id="company" className="rounded-md border px-3 py-2 text-sm dark:bg-stone-900/70" value={form.company} onChange={(e) => setForm({ ...form, company: e.target.value })} />
-
-                <label className="text-sm" htmlFor="role">Cargo</label>
-                <input id="role" className="rounded-md border px-3 py-2 text-sm dark:bg-stone-900/70" value={form.role} onChange={(e) => setForm({ ...form, role: e.target.value })} />
-
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                  <div className="flex flex-col gap-1">
-                    <label className="text-sm" htmlFor="startDate">Início</label>
-                    <input id="startDate" type="date" className="rounded-md border px-3 py-2 text-sm dark:bg-stone-900/70"
-                      value={form.startDate} onChange={(e) => setForm({ ...form, startDate: e.target.value })} />
-                  </div>
-                  <div className="flex flex-col gap-1">
-                    <label className="text-sm" htmlFor="endDate">Fim</label>
-                    <input id="endDate" type="date" className="rounded-md border px-3 py-2 text-sm dark:bg-stone-900/70"
-                      value={form.endDate ?? ''} onChange={(e) => setForm({ ...form, endDate: e.target.value || null })} />
-                    <label className="mt-1 inline-flex items-center gap-2 text-xs">
-                      <input type="checkbox" checked={!form.endDate}
-                        onChange={(e) => setForm({ ...form, endDate: e.target.checked ? null : form.startDate })} />
-                      Atual
-                    </label>
-                  </div>
-                </div>
-
-                <label className="text-sm" htmlFor="bullets">Pontos (um por linha)</label>
-                <textarea id="bullets" rows={6} className="rounded-md border px-3 py-2 text-sm dark:bg-stone-900/70" value={form.bullets.join('\n')} onChange={(e) => setForm({ ...form, bullets: e.target.value.split('\n') })} />
-
-                <div className="flex gap-2">
-                  <Button onClick={onSubmit} disabled={loading}>{isEditing ? 'Salvar' : 'Adicionar'}</Button>
-                  {isEditing && <Button onClick={resetForm} variant="ghost">Cancelar</Button>}
-                </div>
-              </div>
-            </div>
-
-            <div>
-              <h2 className="font-semibold mb-2">Lista</h2>
-              {loading ? (
-                <p className="text-sm">Carregando...</p>
-              ) : (
-                <ul className="space-y-2">
-                  {(experiences??[]).map((e) => (
-                    <li key={e.id} className="rounded border p-3 flex items-start justify-between gap-3">
-                      <div>
-                        <p className="font-medium">{e.company} — {e.role}</p>
-                        <p className="text-xs text-stone-600 dark:text-stone-400">{formatRange(e.startDate, e.endDate)}</p>
-                        {(e.bullets?.length ?? 0) > 0 && (
-                          <ul className="list-disc ml-5 mt-1 text-sm">
-                            {(e.bullets ?? []).map((b, idx) => (<li key={idx}>{b}</li>))}
-                          </ul>
-                        )}
-                      </div>
-                      <div className="flex gap-2">
-                        <Button onClick={() => setFormFromModel(e)} variant="ghost">Editar</Button>
-                        <Button onClick={() => { void onDelete(e.id); }} variant="ghost">Excluir</Button>
-                      </div>
-                    </li>
-                  ))}
-                </ul>
-              )}
-            </div>
-          </div>
-        </Card>
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+          <aside className="md:col-span-1">
+            <nav className="flex md:flex-col gap-2" aria-label="Seleção de seção">
+              <button type="button" className={`rounded border px-3 py-2 text-sm ${section === 'experience' ? 'bg-beige-200/60 dark:bg-stone-800/60' : 'bg-white dark:bg-stone-900/70'}`} onClick={() => setSection('experience')}>
+                Experiências
+              </button>
+              <button type="button" className={`rounded border px-3 py-2 text-sm ${section === 'hability' ? 'bg-beige-200/60 dark:bg-stone-800/60' : 'bg-white dark:bg-stone-900/70'}`} onClick={() => setSection('hability')}>
+                Habilidades
+              </button>
+            </nav>
+          </aside>
+          <section className="md:col-span-3">
+            {(() => {
+              switch (section) {
+                case 'experience':
+                  return (
+                    <CrudCard<ExperienceResponse, CreateExperienceRequest | UpdateExperienceRequest>
+                title="Experiências"
+                fetchList={async () => {
+                  const data = await experiencesApi.list();
+                  return (Array.isArray(data) ? data : []).map(e => ({ ...e, bullets: e.bullets ?? [] }));
+                }}
+                createItem={(body) => experiencesApi.create(body)}
+                updateItem={(id, body) => experiencesApi.update(id, body)}
+                deleteItem={(id) => experiencesApi.delete(id)}
+                initialForm={{ company: '', role: '', startDate: '', endDate: null, bullets: [] }}
+                getId={(it) => it.id}
+                setFormFromItem={(it) => ({ company: it.company, role: it.role, startDate: it.startDate, endDate: it.endDate ?? null, bullets: it.bullets ?? [] })}
+                renderForm={(f, setF) => (<ExperienceForm form={f} setForm={setF} isEditing={false} />)}
+                renderItem={(e) => (<ExperienceItem item={e} />)}
+              />
+                  );
+                case 'hability':
+                  return (
+                    <CrudCard<HabilityResponse, CreateHabilityRequest | UpdateHabilityRequest>
+                      title="Habilidades"
+                      fetchList={async () => {
+                        const data = await habilitiesApi.list();
+                        return (Array.isArray(data) ? data : []).map(e => ({ ...e, bullets: e.bullets ?? [] }));
+                      }}
+                      createItem={(body) => habilitiesApi.create(body)}
+                      updateItem={(id, body) => habilitiesApi.update(id, body)}
+                      deleteItem={(id) => habilitiesApi.delete(id)}
+                      initialForm={{ hability: '', badge: '', bullets: [] }}
+                      getId={(it) => it.id}
+                      setFormFromItem={(it) => ({ hability: it.hability, badge: it.badge, bullets: it.bullets ?? [] })}
+                      renderForm={(f, setF) => (<HabilityForm form={f} setForm={setF} isEditing={false} />)}
+                      renderItem={(e) => (<HabilityItem item={e} />)}
+                    />
+                  );
+                default:
+                  return null;
+              }
+            })()}
+          </section>
+        </div>
       </div>
     </div>
   );

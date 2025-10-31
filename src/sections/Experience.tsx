@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import Card from '../components/ui/Card';
 import { experiencesApi } from '../lib/experiences';
 import type { ExperienceResponse } from '../types/experience';
+import { formatRange } from '../lib/date';
 
 const Experience = () => {
   const [items, setItems] = useState<ExperienceResponse[]>([]);
@@ -24,17 +25,6 @@ const Experience = () => {
     };
     void load();
   }, []);
-
-  const toMMYYYY = (iso: string) => {
-    if (!iso) return '';
-    const [y, m] = iso.split('-');
-    return `${m}/${y}`;
-  };
-
-  const formatRange = (start: string, end?: string | null) => {
-    if (!start) return '';
-    return `${toMMYYYY(start)} – ${end ? toMMYYYY(end) : 'Atual'}`;
-  };
 
   return (
     <section id="experience" className="section">
