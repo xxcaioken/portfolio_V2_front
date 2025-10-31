@@ -7,9 +7,10 @@ type Props = {
   form: FormData;
   setForm: Dispatch<SetStateAction<FormData>>;
   isEditing: boolean;
+  lang?: 'pt' | 'en';
 };
 
-const AditionalInfoForm = ({ form: f, setForm: setF }: Props): ReactElement => {
+const AditionalInfoForm = ({ form: f, setForm: setF, lang }: Props): ReactElement => {
   const addBullet = () => setF({ ...f, bullets: [...(f.bullets ?? []), { text: '', level: '', startDate: '', endDate: '' }] });
   const updateBullet = (idx: number, changes: Partial<AditionalInfoBullet>) => {
     const next = (f.bullets ?? []).map((b, i) => (i === idx ? { ...b, ...changes } : b));
@@ -41,15 +42,15 @@ const AditionalInfoForm = ({ form: f, setForm: setF }: Props): ReactElement => {
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
               <div className="flex flex-col gap-1">
                 <label className="text-sm" htmlFor={`start-${idx}`}>Início</label>
-                <input id={`start-${idx}`} type="date" className="rounded-md border px-3 py-2 text-sm dark:bg-stone-900/70" value={b.startDate ?? ''} onChange={(e) => updateBullet(idx, { startDate: e.target.value || null })} />
+                <input id={`start-${idx}`} type="date" className="rounded-md border px-3 py-2 text-sm dark:bg-stone-900/70" value={b.startDate ?? ''} onChange={(e) => updateBullet(idx, { startDate: e.target.value || null })} disabled={lang === 'en'} />
               </div>
               <div className="flex flex-col gap-1">
                 <label className="text-sm" htmlFor={`end-${idx}`}>Fim</label>
-                <input id={`end-${idx}`} type="date" className="rounded-md border px-3 py-2 text-sm dark:bg-stone-900/70" value={b.endDate ?? ''} onChange={(e) => updateBullet(idx, { endDate: e.target.value || null })} />
+                <input id={`end-${idx}`} type="date" className="rounded-md border px-3 py-2 text-sm dark:bg-stone-900/70" value={b.endDate ?? ''} onChange={(e) => updateBullet(idx, { endDate: e.target.value || null })} disabled={lang === 'en'} />
               </div>
               <div className="flex flex-col gap-1">
                 <label className="text-sm" htmlFor={`level-${idx}`}>Nível</label>
-                <input id={`level-${idx}`} className="rounded-md border px-3 py-2 text-sm dark:bg-stone-900/70" value={b.level ?? ''} onChange={(e) => updateBullet(idx, { level: e.target.value })} />
+                <input id={`level-${idx}`} className="rounded-md border px-3 py-2 text-sm dark:bg-stone-900/70" value={b.level ?? ''} onChange={(e) => updateBullet(idx, { level: e.target.value })} disabled={lang === 'en'} />
               </div>
             </div>
           </div>

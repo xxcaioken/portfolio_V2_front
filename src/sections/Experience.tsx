@@ -24,7 +24,7 @@ const Experience = () => {
       <h2 className="mb-8 text-2xl font-bold text-stone-900">{t('nav.experience')}</h2>
       {error && <p className="text-sm text-red-600" role="alert">{error}</p>}
       {loading ? (
-        <p className="text-sm">Carregando...</p>
+        <p className="text-sm">{t('common.loading')}</p>
       ) : (
         <div className="space-y-4">
           {items.map((exp) => (

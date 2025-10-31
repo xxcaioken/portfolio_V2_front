@@ -9,9 +9,10 @@ type Props = {
   form: HabilityFormData;
   setForm: Dispatch<SetStateAction<HabilityFormData>>;
   isEditing: boolean;
+  lang?: 'pt' | 'en';
 };
 
-const HabilityForm = ({ form: f, setForm: setF }: Props): ReactElement => {
+const HabilityForm = ({ form: f, setForm: setF, lang }: Props): ReactElement => {
   const addBullet = () => setF({ ...f, bullets: [...(f.bullets ?? []), { text: '', badge: '' }] });
   const updateBullet = (idx: number, changes: Partial<HabilityBullet>) => {
     const next = (f.bullets ?? []).map((b, i) => (i === idx ? { ...b, ...changes } : b));
@@ -40,7 +41,7 @@ const HabilityForm = ({ form: f, setForm: setF }: Props): ReactElement => {
             <input id={`hb-text-${idx}`} className="rounded-md border px-3 py-2 text-sm dark:bg-stone-900/70" value={b.text} onChange={(e) => updateBullet(idx, { text: e.target.value })} />
             <label className="flex text-sm" htmlFor={`hb-badge-${idx}`}>Badge (tecnologia)</label>
             <div className="flex items-center gap-2">
-              <input list={`tech-badges`} id={`hb-badge-${idx}`} className="rounded-md border px-3 py-2 text-sm dark:bg-stone-900/70" value={b.badge ?? ''} onChange={(e) => updateBullet(idx, { badge: e.target.value })} />
+              <input list={`tech-badges`} id={`hb-badge-${idx}`} className="rounded-md border px-3 py-2 text-sm dark:bg-stone-900/70" value={b.badge ?? ''} onChange={(e) => updateBullet(idx, { badge: e.target.value })} disabled={lang === 'en'} />
               {(() => { const key = b.badge ? findTechKey(b.badge) : null; return key ? <TechIcon name={key} className="text-stone-700 dark:text-stone-300" /> : null; })()}
             </div>
           </div>

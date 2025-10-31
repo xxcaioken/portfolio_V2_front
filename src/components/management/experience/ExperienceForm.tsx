@@ -7,9 +7,10 @@ type Props = {
   form: ExperienceFormData;
   setForm: Dispatch<SetStateAction<ExperienceFormData>>;
   isEditing: boolean;
+  lang?: 'pt' | 'en';
 };
 
-const ExperienceForm = ({ form: f, setForm: setF }: Props): ReactElement => {
+const ExperienceForm = ({ form: f, setForm: setF, lang }: Props): ReactElement => {
   const addBullet = () => setF({ ...f, bullets: [...(f.bullets ?? []), ''] });
   const updateBullet = (idx: number, text: string) => {
     const next = (f.bullets ?? []).map((b, i) => (i === idx ? text : b));
@@ -29,13 +30,13 @@ const ExperienceForm = ({ form: f, setForm: setF }: Props): ReactElement => {
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
         <div className="flex flex-col gap-1">
           <label className="text-sm" htmlFor="startDate">Início</label>
-          <input id="startDate" type="date" className="rounded-md border px-3 py-2 text-sm dark:bg-stone-900/70" value={f.startDate} onChange={(e) => setF({ ...f, startDate: e.target.value })} />
+          <input id="startDate" type="date" className="rounded-md border px-3 py-2 text-sm dark:bg-stone-900/70" value={f.startDate} onChange={(e) => setF({ ...f, startDate: e.target.value })} disabled={lang === 'en'} />
         </div>
         <div className="flex flex-col gap-1">
           <label className="text-sm" htmlFor="endDate">Fim</label>
-          <input id="endDate" type="date" className="rounded-md border px-3 py-2 text-sm dark:bg-stone-900/70" value={f.endDate ?? ''} onChange={(e) => setF({ ...f, endDate: e.target.value || null })} />
+          <input id="endDate" type="date" className="rounded-md border px-3 py-2 text-sm dark:bg-stone-900/70" value={f.endDate ?? ''} onChange={(e) => setF({ ...f, endDate: e.target.value || null })} disabled={lang === 'en'} />
           <label className="mt-1 inline-flex items-center gap-2 text-xs">
-            <input type="checkbox" checked={!f.endDate} onChange={(e) => setF({ ...f, endDate: e.target.checked ? null : f.startDate })} />
+            <input type="checkbox" checked={!f.endDate} onChange={(e) => setF({ ...f, endDate: e.target.checked ? null : f.startDate })} disabled={lang === 'en'} />
             Atual
           </label>
         </div>

@@ -14,7 +14,8 @@
   "auth.loggingIn": "Entrando...",
   "hero.contactEmail": "Contato por Email",
   "mgmt.title": "Management",
-  "common.back": "Voltar"
+  "common.back": "Voltar",
+  "common.loading": "Carregando..."
 }
 
 

@@ -27,6 +27,7 @@ const Management = () => {
   const { t } = useI18n();
   const navigate = useNavigate();
   const [section, setSection] = useState<'experience' | 'hability' | 'aditional' | 'keytask' | 'about'>('about');
+  const [editLang, setEditLang] = useState<'pt' | 'en'>('pt');
   const logout = () => {
     clearAuthenticated();
     navigate('/login', { replace: true });
@@ -40,7 +41,12 @@ const Management = () => {
             <Button className="cursor-pointer " onClick={() => navigate('/')} variant="ghost" aria-label={t('common.back')}><FiArrowLeft /></Button>
           </span>
           <h1 className="text-2xl font-bold">{t('mgmt.title')}</h1>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-3">
+            <div className="flex items-center gap-1 text-xs">
+              <span className="text-stone-500">Lang</span>
+              <button type="button" className={`rounded px-2 py-1 ${editLang === 'pt' ? 'bg-beige-200/60 dark:bg-stone-800/60' : 'bg-transparent'}`} onClick={() => setEditLang('pt')}>PT</button>
+              <button type="button" className={`rounded px-2 py-1 ${editLang === 'en' ? 'bg-beige-200/60 dark:bg-stone-800/60' : 'bg-transparent'}`} onClick={() => setEditLang('en')}>EN</button>
+            </div>
             <Button onClick={logout} variant="ghost">{t('auth.logout')}</Button>
           </div>
         </div>
@@ -55,17 +61,18 @@ const Management = () => {
                   return (
                     <CrudCard<ExperienceResponse, CreateExperienceRequest | UpdateExperienceRequest>
                 title="Experiências"
-                fetchList={async () => {
-                  const data = await experiencesApi.list();
+                fetchList={async (lang) => {
+                  const data = await experiencesApi.list(lang);
                   return (Array.isArray(data) ? data : []).map(e => ({ ...e, bullets: e.bullets ?? [] }));
                 }}
                 createItem={(body) => experiencesApi.create(body)}
-                updateItem={(id, body) => experiencesApi.update(id, body)}
+                updateItem={(id, body, lang) => experiencesApi.update(id, body, lang)}
                 deleteItem={(id) => experiencesApi.delete(id)}
+                enableLangSelect
                 initialForm={{ company: '', role: '', startDate: '', endDate: null, bullets: [] }}
                 getId={(it) => it.id}
                 setFormFromItem={(it) => ({ company: it.company, role: it.role, startDate: it.startDate, endDate: it.endDate ?? null, bullets: it.bullets ?? [] })}
-                renderForm={(f, setF) => (<ExperienceForm form={f} setForm={setF} isEditing={false} />)}
+                renderForm={(f, setF) => (<ExperienceForm form={f} setForm={setF} isEditing={false} lang={editLang} />)}
                 renderItem={(e) => (<ExperienceItem item={e} />)}
               />
                   );
@@ -73,17 +80,18 @@ const Management = () => {
                   return (
                     <CrudCard<HabilityResponse, CreateHabilityRequest | UpdateHabilityRequest>
                       title="Habilidades"
-                      fetchList={async () => {
-                        const data = await habilitiesApi.list();
+                      fetchList={async (lang) => {
+                        const data = await habilitiesApi.list(lang);
                         return (Array.isArray(data) ? data : []).map(e => ({ ...e, bullets: e.bullets ?? [] }));
                       }}
                       createItem={(body) => habilitiesApi.create(body)}
-                      updateItem={(id, body) => habilitiesApi.update(id, body)}
+                      updateItem={(id, body, lang) => habilitiesApi.update(id, body, lang)}
                       deleteItem={(id) => habilitiesApi.delete(id)}
+                      enableLangSelect
                       initialForm={{ hability: '', bullets: [] }}
                       getId={(it) => it.id}
                       setFormFromItem={(it) => ({ hability: it.hability, bullets: it.bullets ?? [] })}
-                      renderForm={(f, setF) => (<HabilityForm form={f} setForm={setF} isEditing={false} />)}
+                      renderForm={(f, setF) => (<HabilityForm form={f} setForm={setF} isEditing={false} lang={editLang} />)}
                       renderItem={(e) => (<HabilityItem item={e} />)}
                     />
                   );
@@ -91,17 +99,18 @@ const Management = () => {
                   return (
                     <CrudCard<AditionalInfoResponse, CreateAditionalInfoRequest | UpdateAditionalInfoRequest>
                       title="Informações Adicionais"
-                      fetchList={async () => {
-                        const data = await aditionalInfosApi.list();
+                      fetchList={async (lang) => {
+                        const data = await aditionalInfosApi.list(lang);
                         return (Array.isArray(data) ? data : []).map(e => ({ ...e, bullets: e.bullets ?? [] }));
                       }}
                       createItem={(body) => aditionalInfosApi.create(body)}
-                      updateItem={(id, body) => aditionalInfosApi.update(id, body)}
+                      updateItem={(id, body, lang) => aditionalInfosApi.update(id, body, lang)}
                       deleteItem={(id) => aditionalInfosApi.delete(id)}
+                      enableLangSelect
                       initialForm={{ aditionalInfo: '', bullets: [] }}
                       getId={(it) => it.id}
                       setFormFromItem={(it) => ({ aditionalInfo: it.aditionalInfo, bullets: it.bullets ?? [] })}
-                      renderForm={(f, setF) => (<AditionalInfoForm form={f} setForm={setF} isEditing={false} />)}
+                      renderForm={(f, setF) => (<AditionalInfoForm form={f} setForm={setF} isEditing={false} lang={editLang} />)}
                       renderItem={(e) => (<AditionalInfoItem item={e} />)}
                     />
                   );
@@ -109,13 +118,14 @@ const Management = () => {
                   return (
                     <CrudCard<KeyTaskResponse, CreateKeyTaskRequest | UpdateKeyTaskRequest>
                       title="Key Tasks"
-                      fetchList={async () => {
-                        const data = await keyTasksApi.list();
+                      fetchList={async (lang) => {
+                        const data = await keyTasksApi.list(lang);
                         return Array.isArray(data) ? data : [];
                       }}
                       createItem={(body) => keyTasksApi.create(body)}
-                      updateItem={(id, body) => keyTasksApi.update(id, body)}
+                      updateItem={(id, body, lang) => keyTasksApi.update(id, body, lang)}
                       deleteItem={(id) => keyTasksApi.delete(id)}
+                      enableLangSelect
                       initialForm={{ keyTask: '', description: '', technologies: [] }}
                       getId={(it) => it.id}
                       setFormFromItem={(it) => ({ keyTask: it.keyTask, description: it.description, technologies: it.technologies ?? [] })}

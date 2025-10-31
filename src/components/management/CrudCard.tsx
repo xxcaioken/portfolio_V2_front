@@ -6,15 +6,16 @@ type AsyncFn<TArgs extends unknown[] = [], TReturn = unknown> = (...args: TArgs)
 
 type CrudCardProps<TItem, TForm> = {
   title: string;
-  fetchList: AsyncFn<[], TItem[]>;
-  createItem: AsyncFn<[TForm]>;
-  updateItem: AsyncFn<[string, TForm]>;
+  fetchList: AsyncFn<[('pt' | 'en')?], TItem[]>;
+  createItem: AsyncFn<[TForm, ('pt' | 'en')?]>;
+  updateItem: AsyncFn<[string, TForm, ('pt' | 'en')?]>;
   deleteItem: AsyncFn<[string]>;
   initialForm: TForm;
   getId: (item: TItem) => string;
   setFormFromItem: (item: TItem) => TForm;
   renderItem: (item: TItem, helpers: { onEdit: () => void; onDelete: () => void }) => ReactElement;
   renderForm: (form: TForm, setForm: Dispatch<SetStateAction<TForm>>, isEditing: boolean) => ReactElement;
+  enableLangSelect?: boolean;
 };
 
 export function CrudCard<TItem, TForm>({
@@ -28,12 +29,14 @@ export function CrudCard<TItem, TForm>({
   setFormFromItem,
   renderItem,
   renderForm,
+  enableLangSelect = true,
 }: CrudCardProps<TItem, TForm>) {
   const [items, setItems] = useState<TItem[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [form, setForm] = useState<TForm>(initialForm);
+  const [lang, setLang] = useState<'pt' | 'en'>('pt');
 
   const isEditing = useMemo(() => Boolean(editingId), [editingId]);
 
@@ -41,14 +44,14 @@ export function CrudCard<TItem, TForm>({
     setLoading(true);
     setError(null);
     try {
-      const data = await fetchList();
+      const data = await fetchList(lang);
       setItems(Array.isArray(data) ? data : []);
     } catch (e) {
       setError(e instanceof Error ? e.message : 'Erro ao carregar');
     } finally {
       setLoading(false);
     }
-  }, [fetchList]);
+  }, [fetchList, lang]);
 
   useEffect(() => { void load(); }, [load]);
 
@@ -62,9 +65,9 @@ export function CrudCard<TItem, TForm>({
     setError(null);
     try {
       if (isEditing && editingId) {
-        await updateItem(editingId, form);
+        await updateItem(editingId, form, lang);
       } else {
-        await createItem(form);
+        await createItem(form, lang);
       }
       await load();
       resetForm();
@@ -95,17 +98,34 @@ export function CrudCard<TItem, TForm>({
       {error && <p className="text-sm text-red-600 mb-2" role="alert">{error}</p>}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div className="border-2 border-beige-50 rounded-md p-4 shadow">
-          <h2 className="font-semibold mb-2">{isEditing ? 'Editar' : 'Novo'}</h2>
+          <div className="flex items-center justify-between mb-2">
+            <h2 className="font-semibold">{isEditing ? 'Editar' : 'Novo'}</h2>
+            {enableLangSelect && (
+              <div className="flex items-center gap-2 text-xs">
+                <span className="text-stone-500">Lang</span>
+                <button type="button" className={`rounded px-2 py-1 ${lang === 'pt' ? 'bg-beige-200/60 dark:bg-stone-800/60' : 'bg-transparent'}`} onClick={() => setLang('pt')}>PT</button>
+                <button type="button" className={`rounded px-2 py-1 ${lang === 'en' ? 'bg-beige-200/60 dark:bg-stone-800/60' : 'bg-transparent'}`} onClick={() => setLang('en')}>EN</button>
+              </div>
+            )}
+          </div>
           <div className="flex flex-col gap-3">
             {renderForm(form, setForm, isEditing)}
             <div className="flex gap-2">
-              <Button onClick={onSubmit} disabled={loading}>{isEditing ? 'Salvar' : 'Adicionar'}</Button>
+              <Button onClick={onSubmit} disabled={loading || (!isEditing && lang === 'en')}>{isEditing ? 'Salvar' : 'Adicionar'}</Button>
               {isEditing && <Button onClick={resetForm} variant="ghost">Cancelar</Button>}
             </div>
+            {!isEditing && lang === 'en' ? (
+              <p className="text-xs text-stone-500">Criação apenas no idioma base (PT). Para adicionar versão EN, selecione um item da lista e edite com EN.</p>
+            ) : null}
           </div>
         </div>
         <div>
-          <h2 className="font-semibold mb-2">Lista</h2>
+          <div className="flex items-center justify-between mb-2">
+            <h2 className="font-semibold">Lista</h2>
+            {enableLangSelect && (
+              <div className="text-xs text-stone-500">{lang.toUpperCase()}</div>
+            )}
+          </div>
           {loading ? (
             <p className="text-sm">Carregando...</p>
           ) : (

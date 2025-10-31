@@ -1,4 +1,5 @@
 export type AditionalInfoBullet = {
+  id?: string;
   text: string;
   level?: string | null;
   startDate?: string | null;

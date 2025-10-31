@@ -24,7 +24,7 @@ const Education = () => {
       <h2 className="mb-8 text-2xl font-bold text-stone-900 dark:text-stone-100">{t('nav.aditional') || 'Informações Adicionais'}</h2>
       {error && <p className="text-sm text-red-600" role="alert">{error}</p>}
       {loading ? (
-        <p className="text-sm">Carregando...</p>
+        <p className="text-sm">{t('common.loading')}</p>
       ) : (
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
           {items.map((ai, idx) => (

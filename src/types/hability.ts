@@ -1,4 +1,4 @@
-export type HabilityBullet = { text: string; badge?: string | null };
+export type HabilityBullet = { id?: string; text: string; badge?: string | null };
 
 export type HabilityResponse = {
   id: string;
