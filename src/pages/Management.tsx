@@ -77,7 +77,7 @@ const Management = () => {
                       title="Habilidades"
                       fetchList={async (lang) => {
                         const data = await habilitiesApi.list(lang);
-                        return (Array.isArray(data) ? data : []).map(e => ({ ...e, bullets: e.bullets ?? [] }));
+                        return data;
                       }}
                       createItem={(body) => habilitiesApi.create(body)}
                       updateItem={(id, body, lang) => habilitiesApi.update(id, body, lang)}
@@ -96,7 +96,7 @@ const Management = () => {
                       title="Informações Adicionais"
                       fetchList={async (lang) => {
                         const data = await aditionalInfosApi.list(lang);
-                        return (Array.isArray(data) ? data : []).map(e => ({ ...e, bullets: e.bullets ?? [] }));
+                        return data;
                       }}
                       createItem={(body) => aditionalInfosApi.create(body)}
                       updateItem={(id, body, lang) => aditionalInfosApi.update(id, body, lang)}
@@ -116,7 +116,7 @@ const Management = () => {
                       title="Key Tasks"
                       fetchList={async (lang) => {
                         const data = await keyTasksApi.list(lang);
-                        return Array.isArray(data) ? data : [];
+                        return data;
                       }}
                       createItem={(body) => keyTasksApi.create(body)}
                       updateItem={(id, body, lang) => keyTasksApi.update(id, body, lang)}
