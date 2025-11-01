@@ -14,7 +14,7 @@ type CrudCardProps<TItem, TForm> = {
   getId: (item: TItem) => string;
   setFormFromItem: (item: TItem) => TForm;
   renderItem: (item: TItem, helpers: { onEdit: () => void; onDelete: () => void }) => ReactElement;
-  renderForm: (form: TForm, setForm: Dispatch<SetStateAction<TForm>>, isEditing: boolean) => ReactElement;
+  renderForm: (form: TForm, setForm: Dispatch<SetStateAction<TForm>>, isEditing: boolean, lang: 'pt' | 'en') => ReactElement;
   enableLangSelect?: boolean;
 };
 
@@ -54,6 +54,13 @@ export function CrudCard<TItem, TForm>({
   }, [fetchList, lang]);
 
   useEffect(() => { void load(); }, [load]);
+
+  // When language or items change while editing, refresh the form with localized data
+  useEffect(() => {
+    if (!editingId) return;
+    const it = items.find(i => getId(i) === editingId);
+    if (it) setForm(setFormFromItem(it));
+  }, [editingId, items, lang, setFormFromItem, getId]);
 
   function resetForm() {
     setEditingId(null);
@@ -109,7 +116,7 @@ export function CrudCard<TItem, TForm>({
             )}
           </div>
           <div className="flex flex-col gap-3">
-            {renderForm(form, setForm, isEditing)}
+            {renderForm(form, setForm, isEditing, lang)}
             <div className="flex gap-2">
               <Button onClick={onSubmit} disabled={loading || (!isEditing && lang === 'en')}>{isEditing ? 'Salvar' : 'Adicionar'}</Button>
               {isEditing && <Button onClick={resetForm} variant="ghost">Cancelar</Button>}

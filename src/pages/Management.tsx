@@ -27,7 +27,6 @@ const Management = () => {
   const { t } = useI18n();
   const navigate = useNavigate();
   const [section, setSection] = useState<'experience' | 'hability' | 'aditional' | 'keytask' | 'about'>('about');
-  const [editLang, setEditLang] = useState<'pt' | 'en'>('pt');
   const logout = () => {
     clearAuthenticated();
     navigate('/login', { replace: true });
@@ -42,11 +41,6 @@ const Management = () => {
           </span>
           <h1 className="text-2xl font-bold">{t('mgmt.title')}</h1>
           <div className="flex items-center gap-3">
-            <div className="flex items-center gap-1 text-xs">
-              <span className="text-stone-500">Lang</span>
-              <button type="button" className={`rounded px-2 py-1 ${editLang === 'pt' ? 'bg-beige-200/60 dark:bg-stone-800/60' : 'bg-transparent'}`} onClick={() => setEditLang('pt')}>PT</button>
-              <button type="button" className={`rounded px-2 py-1 ${editLang === 'en' ? 'bg-beige-200/60 dark:bg-stone-800/60' : 'bg-transparent'}`} onClick={() => setEditLang('en')}>EN</button>
-            </div>
             <Button onClick={logout} variant="ghost">{t('auth.logout')}</Button>
           </div>
         </div>
@@ -72,7 +66,7 @@ const Management = () => {
                 initialForm={{ company: '', role: '', startDate: '', endDate: null, bullets: [] }}
                 getId={(it) => it.id}
                 setFormFromItem={(it) => ({ company: it.company, role: it.role, startDate: it.startDate, endDate: it.endDate ?? null, bullets: it.bullets ?? [] })}
-                renderForm={(f, setF) => (<ExperienceForm form={f} setForm={setF} isEditing={false} lang={editLang} />)}
+                renderForm={(f, setF, _isEditing, lang) => (<ExperienceForm form={f} setForm={setF} isEditing={false} lang={lang} />)}
                 renderItem={(e) => (<ExperienceItem item={e} />)}
               />
                   );
@@ -91,7 +85,7 @@ const Management = () => {
                       initialForm={{ hability: '', bullets: [] }}
                       getId={(it) => it.id}
                       setFormFromItem={(it) => ({ hability: it.hability, bullets: it.bullets ?? [] })}
-                      renderForm={(f, setF) => (<HabilityForm form={f} setForm={setF} isEditing={false} lang={editLang} />)}
+                      renderForm={(f, setF, _isEditing, lang) => (<HabilityForm form={f} setForm={setF} isEditing={false} lang={lang} />)}
                       renderItem={(e) => (<HabilityItem item={e} />)}
                     />
                   );
@@ -110,7 +104,7 @@ const Management = () => {
                       initialForm={{ aditionalInfo: '', bullets: [] }}
                       getId={(it) => it.id}
                       setFormFromItem={(it) => ({ aditionalInfo: it.aditionalInfo, bullets: it.bullets ?? [] })}
-                      renderForm={(f, setF) => (<AditionalInfoForm form={f} setForm={setF} isEditing={false} lang={editLang} />)}
+                      renderForm={(f, setF, _isEditing, lang) => (<AditionalInfoForm form={f} setForm={setF} isEditing={false} lang={lang} />)}
                       renderItem={(e) => (<AditionalInfoItem item={e} />)}
                     />
                   );
