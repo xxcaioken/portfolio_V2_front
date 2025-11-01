@@ -34,7 +34,7 @@ const Management = () => {
 
   return (
     <div className="min-h-screen px-6 py-8">      
-      <div className="w-full max-w-4xl mx-auto space-y-6">
+      <div className="w-full max-w-7xl mx-auto space-y-6">
         <div className="flex items-center justify-between">
           <span>
             <Button className="cursor-pointer " onClick={() => navigate('/')} variant="ghost" aria-label={t('common.back')}><FiArrowLeft /></Button>
