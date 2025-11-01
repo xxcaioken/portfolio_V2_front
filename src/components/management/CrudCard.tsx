@@ -7,12 +7,14 @@ type AsyncFn<TArgs extends unknown[] = [], TReturn = unknown> = (...args: TArgs)
 type CrudCardProps<TItem, TForm> = {
   title: string;
   fetchList: AsyncFn<[('pt' | 'en')?], TItem[]>;
+  fetchItem?: AsyncFn<[string, ('pt' | 'en')?], TItem>;
   createItem: AsyncFn<[TForm, ('pt' | 'en')?]>;
   updateItem: AsyncFn<[string, TForm, ('pt' | 'en')?]>;
   deleteItem: AsyncFn<[string]>;
   initialForm: TForm;
   getId: (item: TItem) => string;
   setFormFromItem: (item: TItem) => TForm;
+  setFormFromItemWithLang?: (item: TItem, lang: 'pt' | 'en') => TForm;
   renderItem: (item: TItem, helpers: { onEdit: () => void; onDelete: () => void }) => ReactElement;
   renderForm: (form: TForm, setForm: Dispatch<SetStateAction<TForm>>, isEditing: boolean, lang: 'pt' | 'en') => ReactElement;
   enableLangSelect?: boolean;
@@ -21,12 +23,14 @@ type CrudCardProps<TItem, TForm> = {
 export function CrudCard<TItem, TForm>({
   title,
   fetchList,
+  fetchItem,
   createItem,
   updateItem,
   deleteItem,
   initialForm,
   getId,
   setFormFromItem,
+  setFormFromItemWithLang,
   renderItem,
   renderForm,
   enableLangSelect = true,
@@ -59,8 +63,20 @@ export function CrudCard<TItem, TForm>({
   useEffect(() => {
     if (!editingId) return;
     const it = items.find(i => getId(i) === editingId);
-    if (it) setForm(setFormFromItem(it));
-  }, [editingId, items, lang, setFormFromItem, getId]);
+    (async () => {
+      try {
+        if (fetchItem) {
+          setLoading(true);
+          const fresh = await fetchItem(editingId, lang);
+          setForm(setFormFromItem ? setFormFromItem(fresh) : (fresh as unknown as TForm));
+        } else if (it) {
+          setForm(setFormFromItemWithLang ? setFormFromItemWithLang(it, lang) : setFormFromItem(it));
+        }
+      } finally {
+        if (fetchItem) setLoading(false);
+      }
+    })();
+  }, [editingId, items, lang, setFormFromItemWithLang, setFormFromItem, getId, fetchItem]);
 
   function resetForm() {
     setEditingId(null);
@@ -139,11 +155,25 @@ export function CrudCard<TItem, TForm>({
             <ul className="space-y-2">
               {items.map((it) => {
                 const id = getId(it);
+                const openEdit = async () => {
+                  setEditingId(id);
+                  try {
+                    if (fetchItem) {
+                      setLoading(true);
+                      const fresh = await fetchItem(id, lang);
+                      setForm(setFormFromItem ? setFormFromItem(fresh) : (fresh as unknown as TForm));
+                    } else {
+                      setForm(setFormFromItemWithLang ? setFormFromItemWithLang(it, lang) : setFormFromItem(it));
+                    }
+                  } finally {
+                    if (fetchItem) setLoading(false);
+                  }
+                };
                 return (
                   <li key={id} className="rounded border p-3 flex items-start justify-between gap-3">
-                    <div>{renderItem(it, { onEdit: () => { setEditingId(id); setForm(setFormFromItem(it)); }, onDelete: () => { void onDelete(id); } })}</div>
+                    <div>{renderItem(it, { onEdit: () => { void openEdit(); }, onDelete: () => { void onDelete(id); } })}</div>
                     <div className="flex gap-2">
-                      <Button onClick={() => { setEditingId(id); setForm(setFormFromItem(it)); }} variant="ghost">Editar</Button>
+                      <Button onClick={() => { void openEdit(); }} variant="ghost">Editar</Button>
                       <Button onClick={() => { void onDelete(id); }} variant="ghost">Excluir</Button>
                     </div>
                   </li>

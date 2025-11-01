@@ -57,16 +57,17 @@ const Management = () => {
                 title="Experiências"
                 fetchList={async (lang) => {
                   const data = await experiencesApi.list(lang);
-                  return (Array.isArray(data) ? data : []).map(e => ({ ...e, bullets: e.bullets ?? [] }));
+                  return data;
                 }}
                 createItem={(body) => experiencesApi.create(body)}
+                fetchItem={(id, lang) => experiencesApi.get(id, lang)}
                 updateItem={(id, body, lang) => experiencesApi.update(id, body, lang)}
                 deleteItem={(id) => experiencesApi.delete(id)}
                 enableLangSelect
                 initialForm={{ company: '', role: '', startDate: '', endDate: null, bullets: [] }}
                 getId={(it) => it.id}
                 setFormFromItem={(it) => ({ company: it.company, role: it.role, startDate: it.startDate, endDate: it.endDate ?? null, bullets: it.bullets ?? [] })}
-                renderForm={(f, setF, _isEditing, lang) => (<ExperienceForm form={f} setForm={setF} isEditing={false} lang={lang} />)}
+                renderForm={(f, setF, _isEditing, lang) => (<ExperienceForm form={f} setForm={setF} isEditing={_isEditing} lang={lang} />)}
                 renderItem={(e) => (<ExperienceItem item={e} />)}
               />
                   );
@@ -85,7 +86,7 @@ const Management = () => {
                       initialForm={{ hability: '', bullets: [] }}
                       getId={(it) => it.id}
                       setFormFromItem={(it) => ({ hability: it.hability, bullets: it.bullets ?? [] })}
-                      renderForm={(f, setF, _isEditing, lang) => (<HabilityForm form={f} setForm={setF} isEditing={false} lang={lang} />)}
+                      renderForm={(f, setF, _isEditing, lang) => (<HabilityForm form={f} setForm={setF} isEditing={_isEditing} lang={lang} />)}
                       renderItem={(e) => (<HabilityItem item={e} />)}
                     />
                   );
@@ -104,7 +105,8 @@ const Management = () => {
                       initialForm={{ aditionalInfo: '', bullets: [] }}
                       getId={(it) => it.id}
                       setFormFromItem={(it) => ({ aditionalInfo: it.aditionalInfo, bullets: it.bullets ?? [] })}
-                      renderForm={(f, setF, _isEditing, lang) => (<AditionalInfoForm form={f} setForm={setF} isEditing={false} lang={lang} />)}
+                      
+                      renderForm={(f, setF, _isEditing, lang) => (<AditionalInfoForm form={f} setForm={setF} isEditing={_isEditing} lang={lang} />)}
                       renderItem={(e) => (<AditionalInfoItem item={e} />)}
                     />
                   );
@@ -123,7 +125,7 @@ const Management = () => {
                       initialForm={{ keyTask: '', description: '', technologies: [] }}
                       getId={(it) => it.id}
                       setFormFromItem={(it) => ({ keyTask: it.keyTask, description: it.description, technologies: it.technologies ?? [] })}
-                      renderForm={(f, setF) => (<KeyTaskForm form={f} setForm={setF} isEditing={false} />)}
+                      renderForm={(f, setF, _isEditing) => (<KeyTaskForm form={f} setForm={setF} isEditing={_isEditing} />)}
                       renderItem={(e) => (<KeyTaskItem item={e} />)}
                     />
                   );
