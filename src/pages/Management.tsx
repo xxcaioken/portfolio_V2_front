@@ -19,6 +19,10 @@ import AditionalInfoForm from '../components/management/aditional/AditionalInfoF
 import AditionalInfoItem from '../components/management/aditional/AditionalInfoItem';
 import KeyTaskForm from '../components/management/keytask/KeyTaskForm';
 import KeyTaskItem from '../components/management/keytask/KeyTaskItem';
+import RecommendationLetterForm from '../components/management/letters/RecommendationLetterForm';
+import RecommendationLetterItem from '../components/management/letters/RecommendationLetterItem';
+import { recommendationLettersApi } from '../lib/recommendationLetters';
+import type { RecommendationLetterResponse, CreateRecommendationLetterRequest, UpdateRecommendationLetterRequest } from '../types/recommendationLetter';
 import AboutSection from '../components/management/about/AboutSection';
 import { FiArrowLeft } from 'react-icons/fi';
 import { useI18n } from '../i18n';
@@ -26,7 +30,7 @@ import { useI18n } from '../i18n';
 const Management = () => {
   const { t } = useI18n();
   const navigate = useNavigate();
-  const [section, setSection] = useState<'experience' | 'hability' | 'aditional' | 'keytask' | 'about'>('about');
+  const [section, setSection] = useState<'experience' | 'hability' | 'aditional' | 'keytask' | 'letters' | 'about'>('about');
   const logout = () => {
     clearAuthenticated();
     navigate('/login', { replace: true });
@@ -110,6 +114,25 @@ const Management = () => {
                       renderItem={(e) => (<AditionalInfoItem item={e} />)}
                     />
                   );
+                case 'letters':
+                  return (
+                    <CrudCard<RecommendationLetterResponse, CreateRecommendationLetterRequest | UpdateRecommendationLetterRequest>
+                      title="Cartas de Recomendação"
+                      fetchList={async () => {
+                        const data = await recommendationLettersApi.list();
+                        return Array.isArray(data) ? data : [];
+                      }}
+                      createItem={(body) => recommendationLettersApi.create(body)}
+                      updateItem={(id, body) => recommendationLettersApi.update(id, body)}
+                      deleteItem={(id) => recommendationLettersApi.delete(id)}
+                      enableLangSelect={false}
+                      initialForm={{ imageUrlPt: '', imageUrlEn: '' }}
+                      getId={(it) => it.id}
+                      setFormFromItem={(it) => ({ imageUrlPt: it.imageUrlPt, imageUrlEn: it.imageUrlEn })}
+                      renderForm={(f, setF, _isEditing) => (<RecommendationLetterForm form={f} setForm={setF} isEditing={_isEditing} />)}
+                      renderItem={(e) => (<RecommendationLetterItem item={e} />)}
+                    />
+                  );
                 case 'keytask':
                   return (
                     <CrudCard<KeyTaskResponse, CreateKeyTaskRequest | UpdateKeyTaskRequest>
@@ -147,6 +170,9 @@ const Management = () => {
               </button>
               <button type="button" className={`rounded border px-3 py-2 text-sm ${section === 'aditional' ? 'bg-beige-200/60 dark:bg-stone-800/60' : 'bg-white dark:bg-stone-900/70'}`} onClick={() => setSection('aditional')}>
                 {t('nav.aditional') || 'Info Adicionais'}
+              </button>
+              <button type="button" className={`rounded border px-3 py-2 text-sm ${section === 'letters' ? 'bg-beige-200/60 dark:bg-stone-800/60' : 'bg-white dark:bg-stone-900/70'}`} onClick={() => setSection('letters')}>
+                Cartas
               </button>
               <button type="button" className={`rounded border px-3 py-2 text-sm ${section === 'keytask' ? 'bg-beige-200/60 dark:bg-stone-800/60' : 'bg-white dark:bg-stone-900/70'}`} onClick={() => setSection('keytask')}>
                 {t('nav.projects')}
