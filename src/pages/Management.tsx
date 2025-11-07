@@ -19,6 +19,10 @@ import AditionalInfoForm from '../components/management/aditional/AditionalInfoF
 import AditionalInfoItem from '../components/management/aditional/AditionalInfoItem';
 import KeyTaskForm from '../components/management/keytask/KeyTaskForm';
 import KeyTaskItem from '../components/management/keytask/KeyTaskItem';
+import TestimonialForm from '../components/management/testimonial/TestimonialForm';
+import TestimonialItem from '../components/management/testimonial/TestimonialItem';
+import { testimonialsApi } from '../lib/testimonials';
+import type { TestimonialResponse, CreateTestimonialRequest, UpdateTestimonialRequest } from '../types/testimonial';
 import RecommendationLetterForm from '../components/management/letters/RecommendationLetterForm';
 import RecommendationLetterItem from '../components/management/letters/RecommendationLetterItem';
 import { recommendationLettersApi } from '../lib/recommendationLetters';
@@ -30,7 +34,7 @@ import { useI18n } from '../i18n';
 const Management = () => {
   const { t } = useI18n();
   const navigate = useNavigate();
-  const [section, setSection] = useState<'experience' | 'hability' | 'aditional' | 'keytask' | 'letters' | 'about'>('about');
+  const [section, setSection] = useState<'experience' | 'hability' | 'aditional' | 'keytask' | 'letters' | 'feedbacks' | 'about'>('about');
   const logout = () => {
     clearAuthenticated();
     navigate('/login', { replace: true });
@@ -133,6 +137,29 @@ const Management = () => {
                       renderItem={(e) => (<RecommendationLetterItem item={e} />)}
                     />
                   );
+                case 'feedbacks':
+                  return (
+                    <CrudCard<TestimonialResponse, CreateTestimonialRequest | UpdateTestimonialRequest>
+                      title="Feedbacks"
+                      fetchList={async (lang) => {
+                        const data = await testimonialsApi.list(lang);
+                        return data;
+                      }}
+                      createItem={(body) => testimonialsApi.create(body)}
+                      fetchItem={(id, lang) => testimonialsApi.get(id, lang)}
+                      updateItem={(id, body, lang) => testimonialsApi.update(id, body, lang)}
+                      deleteItem={(id) => testimonialsApi.delete(id)}
+                      enableLangSelect
+                      initialForm={{ name: '', highlight: '' }}
+                      getId={(it) => it.id}
+                      setFormFromItem={(it) => ({ name: it.name, highlight: it.highlight })}
+                      setFormFromItemWithLang={(it, lang) => (lang === 'en' ? { name: '', highlight: '' } : { name: it.name, highlight: it.highlight })}
+                      renderForm={(f, setF, _isEditing, lang) => (
+                        <TestimonialForm form={f} setForm={setF} isEditing={_isEditing} createdAt={undefined} lang={lang} />
+                      )}
+                      renderItem={(e) => (<TestimonialItem item={e} />)}
+                    />
+                  );
                 case 'keytask':
                   return (
                     <CrudCard<KeyTaskResponse, CreateKeyTaskRequest | UpdateKeyTaskRequest>
@@ -173,6 +200,9 @@ const Management = () => {
               </button>
               <button type="button" className={`rounded border px-3 py-2 text-sm ${section === 'letters' ? 'bg-beige-200/60 dark:bg-stone-800/60' : 'bg-white dark:bg-stone-900/70'}`} onClick={() => setSection('letters')}>
                 Cartas
+              </button>
+              <button type="button" className={`rounded border px-3 py-2 text-sm ${section === 'feedbacks' ? 'bg-beige-200/60 dark:bg-stone-800/60' : 'bg-white dark:bg-stone-900/70'}`} onClick={() => setSection('feedbacks')}>
+                Feedbacks
               </button>
               <button type="button" className={`rounded border px-3 py-2 text-sm ${section === 'keytask' ? 'bg-beige-200/60 dark:bg-stone-800/60' : 'bg-white dark:bg-stone-900/70'}`} onClick={() => setSection('keytask')}>
                 {t('nav.projects')}
