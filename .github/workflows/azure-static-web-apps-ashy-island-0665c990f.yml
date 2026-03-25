@@ -16,8 +16,7 @@ jobs:
     name: Build and Deploy Job
     environment: production
     env:
-      VITE_API_BASE_URL: ${{ vars.VITE_API_BASE_URL }}
-      VITE_DEV_API_PROXY_TARGET: ${{ vars.VITE_DEV_API_PROXY_TARGET }}
+      VITE_API_BASE_URL: https://port-back-dgd7fec4ccdzgqfa.westus2-01.azurewebsites.net
     steps:
       - uses: actions/checkout@v3
         with:
