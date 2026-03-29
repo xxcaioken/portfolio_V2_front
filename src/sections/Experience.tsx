@@ -33,8 +33,12 @@ const Experience = () => {
           {items.map((exp, i) => (
             <div
               key={exp.id}
-              className={inView ? 'animate-fade-up' : 'opacity-0'}
-              style={{ animationDelay: `${i * 0.1}s` }}
+              className="transition-[opacity,transform] duration-500 ease-out"
+              style={{
+                opacity: inView ? 1 : 0,
+                transform: inView ? 'translateY(0)' : 'translateY(24px)',
+                transitionDelay: inView ? `${i * 0.1}s` : '0s',
+              }}
             >
               <Card
                 title={

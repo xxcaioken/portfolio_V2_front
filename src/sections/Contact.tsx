@@ -8,7 +8,15 @@ const Contact = () => {
   const { t } = useI18n();
   const { ref, inView } = useInView<HTMLElement>();
   return (
-    <section ref={ref} id="contact" className={`section ${inView ? 'animate-fade-up' : 'opacity-0'}`}>
+    <section
+      ref={ref}
+      id="contact"
+      className="section transition-[opacity,transform] duration-500 ease-out"
+      style={{
+        opacity: inView ? 1 : 0,
+        transform: inView ? 'translateY(0)' : 'translateY(24px)',
+      }}
+    >
       <SectionHeading title={t('nav.contact')} />
       <div className="flex flex-col gap-4 text-stone-700 dark:text-stone-300">
         <p>

@@ -33,8 +33,12 @@ const Education = () => {
           {items.map((ai, idx) => (
             <div
               key={ai.id}
-              className={`${items.length % 2 !== 0 && idx === items.length - 1 ? 'sm:col-span-2' : ''} ${inView ? 'animate-fade-up' : 'opacity-0'}`}
-              style={{ animationDelay: `${idx * 0.1}s` }}
+              className={`transition-[opacity,transform] duration-500 ease-out${items.length % 2 !== 0 && idx === items.length - 1 ? ' sm:col-span-2' : ''}`}
+              style={{
+                opacity: inView ? 1 : 0,
+                transform: inView ? 'translateY(0)' : 'translateY(24px)',
+                transitionDelay: inView ? `${idx * 0.1}s` : '0s',
+              }}
             >
               <Card title={ai.aditionalInfo}>
                 {(ai.bullets?.length ?? 0) > 0 ? (

@@ -5,6 +5,10 @@ import { useAbout } from '../lib/useAbout';
 import { resolveApiUrl } from '../lib/api';
 import { useI18n } from '../i18n';
 
+function getInitials(name: string) {
+  return name.split(' ').filter(Boolean).map(n => n[0]).join('').slice(0, 2).toUpperCase();
+}
+
 function useTypewriter(text: string, startDelay = 1000, speed = 52) {
   const [displayed, setDisplayed] = useState('');
   useEffect(() => {
@@ -29,6 +33,7 @@ function useTypewriter(text: string, startDelay = 1000, speed = 52) {
 const Hero = () => {
   const { about } = useAbout();
   const { t } = useI18n();
+  const [avatarError, setAvatarError] = useState(false);
   const displayedTitle = useTypewriter(about?.title ?? '', 1000, 52);
   const isTyping = displayedTitle.length < (about?.title?.length ?? 0);
   const name = about?.name || '';
@@ -107,18 +112,27 @@ const Hero = () => {
         </div>
 
         {/* Avatar flutuante */}
-        {about?.avatarUrl ? (
+        {about?.name ? (
           <div
             className="animate-fade-in shrink-0 relative"
             style={{ animationDelay: '0.3s' }}
           >
             {/* Glow atrás */}
             <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-beige-300/70 to-sand-300/50 blur-2xl scale-[1.15] dark:from-stone-700/35 dark:to-stone-600/25" />
-            <img
-              src={resolveApiUrl(about.avatarUrl)}
-              alt="Avatar"
-              className="relative h-36 w-36 sm:h-48 sm:w-48 md:h-64 md:w-64 rounded-2xl object-cover ring-2 ring-beige-300/60 shadow-2xl animate-float dark:ring-stone-600/50"
-            />
+            {about.avatarUrl && !avatarError ? (
+              <img
+                src={resolveApiUrl(about.avatarUrl)}
+                alt="Avatar"
+                onError={() => setAvatarError(true)}
+                className="relative h-36 w-36 sm:h-48 sm:w-48 md:h-64 md:w-64 rounded-2xl object-cover ring-2 ring-beige-300/60 shadow-2xl animate-float dark:ring-stone-600/50"
+              />
+            ) : (
+              <div className="relative h-36 w-36 sm:h-48 sm:w-48 md:h-64 md:w-64 rounded-2xl bg-beige-200 dark:bg-stone-800 flex items-center justify-center ring-2 ring-beige-300/60 shadow-2xl animate-float dark:ring-stone-600/50">
+                <span className="text-4xl sm:text-5xl md:text-6xl font-bold text-beige-700 dark:text-beige-400 select-none">
+                  {getInitials(about.name)}
+                </span>
+              </div>
+            )}
           </div>
         ) : null}
       </div>
