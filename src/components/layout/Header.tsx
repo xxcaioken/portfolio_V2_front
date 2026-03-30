@@ -40,7 +40,7 @@ const Header = () => {
               {!authed ? (
                 <a href="/login" className="text-sm hover:text-beige-700 dark:hover:text-beige-400 transition-colors">{t('auth.login')}</a>
               ) : (
-                <a className="cursor-pointer hover:text-beige-700 dark:hover:text-beige-400 transition-colors" onClick={onLogout}>{t('auth.logout')}</a>
+                <button type="button" className="hover:text-beige-700 dark:hover:text-beige-400 transition-colors" onClick={onLogout}>{t('auth.logout')}</button>
               )}
             </li>
             <li className="relative">
@@ -50,6 +50,7 @@ const Header = () => {
                 aria-expanded={openLang}
                 className="flex items-center gap-2 rounded px-2 py-1 text-sm hover:bg-beige-200/60 dark:hover:bg-stone-800/60 transition-colors"
                 onClick={() => setOpenLang(v => !v)}
+                onKeyDown={e => { if (e.key === 'Escape') setOpenLang(false); }}
               >
                 <ReactCountryFlag countryCode={lang === 'pt' ? 'BR' : 'US'} svg style={{ width: 20, height: 20 }} />
                 <span className="hidden lg:inline">{lang.toUpperCase()}</span>
@@ -105,7 +106,7 @@ const Header = () => {
               {!authed ? (
                 <a href="/login" onClick={closeMobile} className="rounded-md px-3 py-2 hover:bg-beige-200/60 dark:hover:bg-stone-800/60 transition-colors">{t('auth.login')}</a>
               ) : (
-                <a className="cursor-pointer rounded-md px-3 py-2 hover:bg-beige-200/60 dark:hover:bg-stone-800/60 transition-colors" onClick={() => { onLogout(); closeMobile(); }}>{t('auth.logout')}</a>
+                <button type="button" className="rounded-md px-3 py-2 hover:bg-beige-200/60 dark:hover:bg-stone-800/60 transition-colors" onClick={() => { onLogout(); closeMobile(); }}>{t('auth.logout')}</button>
               )}
               <div className="flex gap-2">
                 <button type="button" className={`flex items-center gap-1.5 rounded px-2 py-1 text-xs hover:bg-beige-200/60 dark:hover:bg-stone-800/60 ${lang === 'pt' ? 'font-medium' : 'opacity-60'}`} onClick={() => { setLang('pt'); closeMobile(); }}>

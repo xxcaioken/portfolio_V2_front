@@ -15,7 +15,11 @@
   "hero.contactEmail": "Contact by Email",
   "mgmt.title": "Management",
   "common.back": "Back",
-  "common.loading": "Loading..."
+  "common.loading": "Loading...",
+  "section.recommendations": "Recommendation Letters",
+  "section.recommendationsSubtitle": "Highlights from recommendations",
+  "section.noRecommendations": "No letters available.",
+  "section.noItems": "No items"
 }
 
 

@@ -15,7 +15,11 @@
   "hero.contactEmail": "Contato por Email",
   "mgmt.title": "Management",
   "common.back": "Voltar",
-  "common.loading": "Carregando..."
+  "common.loading": "Carregando...",
+  "section.recommendations": "Cartas de Recomendação",
+  "section.recommendationsSubtitle": "Destaques em recomendações",
+  "section.noRecommendations": "Nenhuma carta disponível.",
+  "section.noItems": "Sem itens"
 }
 
 

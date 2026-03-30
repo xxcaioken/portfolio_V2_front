@@ -1,4 +1,4 @@
-import { useEffect, useState, type ReactElement } from 'react';
+import { type ReactElement } from 'react';
 import Slider from 'react-slick';
 import type { Settings } from 'react-slick';
 import 'slick-carousel/slick/slick.css';
@@ -7,6 +7,10 @@ import { recommendationLettersApi } from '../lib/recommendationLetters';
 import type { RecommendationLetterResponse } from '../types/recommendationLetter';
 import { useI18n } from '../i18n';
 import { resolveApiUrl } from '../lib/api';
+import SectionHeading from '../components/ui/SectionHeading';
+import Skeleton from '../components/ui/Skeleton';
+import { useInView } from '../lib/useInView';
+import { useCache } from '../lib/useCache';
 
 const sliderSettings: Settings = {
   dots: true,
@@ -21,37 +25,37 @@ const sliderSettings: Settings = {
 };
 
 const RecommendationLetters = (): ReactElement => {
-  const { lang } = useI18n();
-  const [items, setItems] = useState<RecommendationLetterResponse[]>([]);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const { t, lang } = useI18n();
+  const { data, loading, error } = useCache<RecommendationLetterResponse[]>('recommendation_letters', () => recommendationLettersApi.list());
+  const { ref, inView } = useInView<HTMLElement>();
 
-  useEffect(() => {
-    const load = async () => {
-      setLoading(true); setError(null);
-      try { const data = await recommendationLettersApi.list(); setItems(Array.isArray(data) ? data : []); }
-      catch (e) { setError(e instanceof Error ? e.message : 'Erro ao carregar'); }
-      finally { setLoading(false); }
-    };
-    void load();
-  }, []);
-
-  const imgs = items
+  const imgs = (data ?? [])
     .map(it => {
       const raw = lang === 'en' ? (it.imageUrlEn ?? '') : (it.imageUrlPt ?? '');
       const src = resolveApiUrl(raw);
-      return { src, alt: `Carta ${lang.toUpperCase()}` };
+      return { src, alt: `${t('section.recommendations')} ${lang.toUpperCase()}` };
     })
     .filter(x => !!x.src);
 
   return (
-    <section className="container-page py-16 sm:py-24">
-      <div className="mb-8">
-        <h2 className="text-2xl font-bold">Cartas de recomendação</h2>
-        <p className="text-stone-600 dark:text-stone-400 text-sm">Alguns destaques em recomendações</p>
-      </div>
-      {error ? <p className="text-sm text-red-600">{error}</p> : null}
-      {loading ? <p className="text-sm">Carregando...</p> : (
+    <section
+      ref={ref}
+      className="container-page py-16 sm:py-24 transition-[opacity,transform] duration-500 ease-out"
+      style={{
+        opacity: inView ? 1 : 0,
+        transform: inView ? 'translateY(0)' : 'translateY(24px)',
+      }}
+    >
+      <SectionHeading title={t('section.recommendations')} subtitle={t('section.recommendationsSubtitle')} />
+      {error ? <p className="text-sm text-red-600" role="alert">{error}</p> : null}
+      {loading ? (
+        <div className="flex flex-col items-center gap-3">
+          <Skeleton className="h-[500px] w-full max-w-2xl mx-auto" />
+          <div className="flex gap-2">
+            {[0, 1, 2].map(i => <Skeleton key={i} className="h-2.5 w-2.5 rounded-full" />)}
+          </div>
+        </div>
+      ) : (
         imgs.length > 0 ? (
           <Slider {...sliderSettings}>
             {imgs.map((img, idx) => (
@@ -65,12 +69,10 @@ const RecommendationLetters = (): ReactElement => {
               </div>
             ))}
           </Slider>
-        ) : <p className="text-sm text-stone-600 dark:text-stone-400">Nenhuma carta disponível.</p>
+        ) : <p className="text-sm text-stone-600 dark:text-stone-400">{t('section.noRecommendations')}</p>
       )}
     </section>
   );
 };
 
 export default RecommendationLetters;
-
-

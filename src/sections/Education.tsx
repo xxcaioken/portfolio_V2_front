@@ -60,7 +60,7 @@ const Education = () => {
                     ))}
                   </ul>
                 ) : (
-                  <span className="text-sm text-stone-600">Sem itens</span>
+                  <span className="text-sm text-stone-600">{t('section.noItems')}</span>
                 )}
               </Card>
             </div>
