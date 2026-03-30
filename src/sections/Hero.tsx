@@ -42,13 +42,13 @@ const Hero = () => {
     <section id="home" className="container-page relative min-h-[88vh] flex flex-col justify-center overflow-hidden py-16 sm:py-20">
 
       {/* Blobs animados de fundo */}
-      <div className="pointer-events-none absolute -top-48 -left-48 h-[520px] w-[520px] rounded-full bg-beige-200/55 blur-3xl animate-blob dark:bg-stone-800/30" />
+      <div className="pointer-events-none absolute -top-48 -left-48 h-[520px] w-[520px] rounded-full bg-beige-200/55 blur-2xl animate-blob dark:bg-stone-800/30" />
       <div
-        className="pointer-events-none absolute -bottom-36 -right-24 h-[420px] w-[420px] rounded-full bg-sand-300/45 blur-3xl animate-blob dark:bg-stone-700/20"
+        className="pointer-events-none absolute -bottom-36 -right-24 h-[420px] w-[420px] rounded-full bg-sand-300/45 blur-2xl animate-blob dark:bg-stone-700/20"
         style={{ animationDelay: '3.5s' }}
       />
       <div
-        className="pointer-events-none absolute top-1/3 right-1/4 h-[280px] w-[280px] rounded-full bg-beige-300/25 blur-3xl animate-blob dark:bg-stone-800/15"
+        className="pointer-events-none absolute top-1/3 right-1/4 h-[280px] w-[280px] rounded-full bg-beige-300/25 blur-2xl animate-blob dark:bg-stone-800/15"
         style={{ animationDelay: '7s' }}
       />
 

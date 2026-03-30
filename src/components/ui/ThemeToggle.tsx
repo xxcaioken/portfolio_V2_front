@@ -49,7 +49,7 @@ const ThemeToggle = () => {
       onClick={toggle}
       aria-pressed={isDark}
       aria-label={isDark ? 'Alternar para tema claro' : 'Alternar para tema escuro'}
-      className="inline-flex h-9 w-9 items-center justify-center rounded-md border border-beige-200/60 bg-white/80 text-stone-700 shadow-sm transition hover:bg-beige-100 focus:outline-none focus:ring-2 focus:ring-beige-400 dark:border-stone-800/60 dark:bg-stone-900/70 dark:text-stone-100 dark:hover:bg-stone-800/70 dark:focus:ring-stone-700"
+      className="inline-flex h-9 w-9 items-center justify-center rounded-md border border-beige-200/60 bg-white/80 text-stone-700 shadow-sm transition hover:bg-beige-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-beige-500 focus-visible:ring-offset-2 dark:border-stone-800/60 dark:bg-stone-900/70 dark:text-stone-100 dark:hover:bg-stone-800/70"
     >
       {isDark ? (
         // Sun icon

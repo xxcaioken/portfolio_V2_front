@@ -40,8 +40,8 @@
 /* ── Animations ─────────────────────────────────────────── */
 
 @keyframes fade-up {
-  from { opacity: 0; transform: translateY(24px); filter: blur(6px); }
-  to   { opacity: 1; transform: translateY(0);    filter: blur(0); }
+  from { opacity: 0; transform: translateY(24px); }
+  to   { opacity: 1; transform: translateY(0); }
 }
 
 @keyframes fade-in {
@@ -55,8 +55,8 @@
 }
 
 @keyframes char-reveal {
-  from { opacity: 0; transform: translateY(16px); filter: blur(4px); }
-  to   { opacity: 1; transform: translateY(0);    filter: blur(0); }
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0); }
 }
 
 @keyframes float {
@@ -97,10 +97,12 @@
 }
 
 @utility animate-float {
+  will-change: transform;
   animation: float 4s ease-in-out infinite;
 }
 
 @utility animate-blob {
+  will-change: transform;
   animation: blob 10s ease-in-out infinite;
 }
 
@@ -109,6 +111,7 @@
 }
 
 @utility animate-bounce-down {
+  will-change: transform;
   animation: bounce-down 1.6s ease-in-out infinite;
 }
 

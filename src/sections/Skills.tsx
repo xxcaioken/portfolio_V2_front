@@ -18,7 +18,7 @@ const Skills = () => {
   return (
     <section ref={ref} id="skills" className="section">
       <SectionHeading title={t('nav.skills')} />
-      {error && <p className="text-sm text-red-600" role="alert">{error}</p>}
+      {error && <p className="text-sm text-red-600 dark:text-red-400" role="alert">{error}</p>}
       {loading ? (
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
           {[0, 1, 2, 3, 4].map(i => (

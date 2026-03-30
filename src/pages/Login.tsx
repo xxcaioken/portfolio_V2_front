@@ -57,10 +57,10 @@ const Login = () => {
               name="username"
               type="text"
               autoComplete="username"
-              className="rounded-md border border-beige-200/70 bg-white/80 px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-beige-300 dark:border-stone-800/70 dark:bg-stone-900/70"
+              className="rounded-md border border-beige-200/70 bg-white/80 px-3 py-2 text-sm outline-none focus-visible:ring-2 focus-visible:ring-beige-500 focus-visible:ring-offset-2 dark:border-stone-800/70 dark:bg-stone-900/70"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
-              aria-required
+              required
             />
 
             <label className="text-sm" htmlFor="password">{t('auth.password') || 'Senha'}</label>
@@ -69,10 +69,10 @@ const Login = () => {
               name="password"
               type="password"
               autoComplete="current-password"
-              className="rounded-md border border-beige-200/70 bg-white/80 px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-beige-300 dark:border-stone-800/70 dark:bg-stone-900/70"
+              className="rounded-md border border-beige-200/70 bg-white/80 px-3 py-2 text-sm outline-none focus-visible:ring-2 focus-visible:ring-beige-500 focus-visible:ring-offset-2 dark:border-stone-800/70 dark:bg-stone-900/70"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              aria-required
+              required
             />
 
             {error && (
