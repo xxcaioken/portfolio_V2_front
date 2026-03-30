@@ -1,27 +1,18 @@
-import { useEffect, useState } from 'react';
 import Card from '../components/ui/Card';
 import SectionHeading from '../components/ui/SectionHeading';
 import Skeleton from '../components/ui/Skeleton';
 import { aditionalInfosApi } from '../lib/aditionalInfos';
 import type { AditionalInfoResponse } from '../types/aditionalInfo';
 import { formatRange } from '../lib/date';
-import { loadSectionData } from '../lib/api';
 import { useI18n } from '../i18n';
 import { useInView } from '../lib/useInView';
+import { useCache } from '../lib/useCache';
 
 const Education = () => {
-  const { t } = useI18n();
-  const [items, setItems] = useState<AditionalInfoResponse[]>([]);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const { t, lang } = useI18n();
+  const { data, loading, error } = useCache<AditionalInfoResponse[]>(`education_${lang}`, () => aditionalInfosApi.list(lang));
+  const items = data ?? [];
   const { ref, inView } = useInView<HTMLElement>();
-
-  useEffect(() => {
-    const load = async () => {
-      setItems(await loadSectionData(aditionalInfosApi, setLoading, setError) as AditionalInfoResponse[]);
-    };
-    void load();
-  }, []);
 
   return (
     <section ref={ref} id="education" className="section">

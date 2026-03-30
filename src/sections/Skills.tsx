@@ -1,4 +1,3 @@
-import { useEffect, useState } from 'react';
 import Card from '../components/ui/Card';
 import SectionHeading from '../components/ui/SectionHeading';
 import Skeleton from '../components/ui/Skeleton';
@@ -6,23 +5,15 @@ import { habilitiesApi } from '../lib/habilities';
 import type { HabilityResponse } from '../types/hability';
 import { findTechKey } from '../icons/tech.data';
 import { TechIcon } from '../icons/TechIcon';
-import { loadSectionData } from '../lib/api';
 import { useI18n } from '../i18n';
 import { useInView } from '../lib/useInView';
+import { useCache } from '../lib/useCache';
 
 const Skills = () => {
-  const { t } = useI18n();
-  const [items, setItems] = useState<HabilityResponse[]>([]);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const { t, lang } = useI18n();
+  const { data, loading, error } = useCache<HabilityResponse[]>(`skills_${lang}`, () => habilitiesApi.list(lang));
+  const items = data ?? [];
   const { ref, inView } = useInView<HTMLElement>();
-
-  useEffect(() => {
-    const load = async () => {
-      setItems(await loadSectionData(habilitiesApi, setLoading, setError) as HabilityResponse[]);
-    };
-    void load();
-  }, []);
 
   return (
     <section ref={ref} id="skills" className="section">

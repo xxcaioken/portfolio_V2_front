@@ -1,4 +1,3 @@
-import { useEffect, useState } from 'react';
 import Card from '../components/ui/Card';
 import Badge from '../components/ui/Badge';
 import SectionHeading from '../components/ui/SectionHeading';
@@ -7,23 +6,15 @@ import { keyTasksApi } from '../lib/keytasks';
 import type { KeyTaskResponse } from '../types/keytask';
 import { findTechKey } from '../icons/tech.data';
 import { TechIcon } from '../icons/TechIcon';
-import { loadSectionData } from '../lib/api';
 import { useI18n } from '../i18n';
 import { useInView } from '../lib/useInView';
+import { useCache } from '../lib/useCache';
 
 const Projects = () => {
-  const { t } = useI18n();
-  const [items, setItems] = useState<KeyTaskResponse[]>([]);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const { t, lang } = useI18n();
+  const { data, loading, error } = useCache<KeyTaskResponse[]>(`projects_${lang}`, () => keyTasksApi.list(lang));
+  const items = data ?? [];
   const { ref, inView } = useInView<HTMLElement>();
-
-  useEffect(() => {
-    const load = async () => {
-      setItems(await loadSectionData(keyTasksApi, setLoading, setError) as KeyTaskResponse[]);
-    };
-    void load();
-  }, []);
 
   return (
     <section ref={ref} id="projects" className="section">

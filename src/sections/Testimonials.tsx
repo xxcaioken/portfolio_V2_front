@@ -1,4 +1,4 @@
-import { useEffect, useState, type ReactElement } from 'react';
+import { type ReactElement } from 'react';
 import Slider from 'react-slick';
 import type { Settings } from 'react-slick';
 import 'slick-carousel/slick/slick.css';
@@ -9,6 +9,7 @@ import { useI18n } from '../i18n';
 import SectionHeading from '../components/ui/SectionHeading';
 import Skeleton from '../components/ui/Skeleton';
 import { useInView } from '../lib/useInView';
+import { useCache } from '../lib/useCache';
 
 const sliderSettings: Settings = {
   dots: true,
@@ -30,20 +31,9 @@ const sliderSettings: Settings = {
 
 const Testimonials = (): ReactElement => {
   const { lang } = useI18n();
-  const [items, setItems] = useState<TestimonialResponse[]>([]);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const { data, loading, error } = useCache<TestimonialResponse[]>(`testimonials_${lang}`, () => testimonialsApi.list(lang));
+  const items = Array.isArray(data) ? data : [];
   const { ref, inView } = useInView<HTMLElement>();
-
-  useEffect(() => {
-    const load = async () => {
-      setLoading(true); setError(null);
-      try { const data = await testimonialsApi.list(lang); setItems(Array.isArray(data) ? data : []); }
-      catch (e) { setError(e instanceof Error ? e.message : 'Erro ao carregar'); }
-      finally { setLoading(false); }
-    };
-    void load();
-  }, [lang]);
 
   return (
     <section

@@ -1,27 +1,18 @@
-import { useEffect, useState } from 'react';
 import Card from '../components/ui/Card';
 import SectionHeading from '../components/ui/SectionHeading';
 import Skeleton from '../components/ui/Skeleton';
 import { experiencesApi } from '../lib/experiences';
 import type { ExperienceResponse } from '../types/experience';
 import { formatRange } from '../lib/date';
-import { loadSectionData } from '../lib/api';
 import { useI18n } from '../i18n';
 import { useInView } from '../lib/useInView';
+import { useCache } from '../lib/useCache';
 
 const Experience = () => {
-  const { t } = useI18n();
-  const [items, setItems] = useState<ExperienceResponse[]>([]);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const { t, lang } = useI18n();
+  const { data, loading, error } = useCache<ExperienceResponse[]>(`experiences_${lang}`, () => experiencesApi.list(lang));
+  const items = data ?? [];
   const { ref, inView } = useInView<HTMLElement>();
-
-  useEffect(() => {
-    const load = async () => {
-      setItems(await loadSectionData(experiencesApi, setLoading, setError) as ExperienceResponse[]);
-    };
-    void load();
-  }, []);
 
   return (
     <section ref={ref} id="experience" className="section">
