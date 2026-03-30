@@ -7,6 +7,7 @@ import { testimonialsApi } from '../lib/testimonials';
 import type { TestimonialResponse } from '../types/testimonial';
 import { useI18n } from '../i18n';
 import SectionHeading from '../components/ui/SectionHeading';
+import Skeleton from '../components/ui/Skeleton';
 import { useInView } from '../lib/useInView';
 
 const sliderSettings: Settings = {
@@ -55,7 +56,24 @@ const Testimonials = (): ReactElement => {
     >
       <SectionHeading title="Feedbacks" subtitle="Destaques de pessoas que trabalharam comigo" />
       {error ? <p className="text-sm text-red-600">{error}</p> : null}
-      {loading ? <p className="text-sm">Carregando...</p> : (
+      {loading ? (
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          {[0, 1, 2].map(i => (
+            <div key={i} className="rounded-xl border border-beige-200/70 bg-white p-5 dark:border-stone-800/70 dark:bg-stone-900/70">
+              <div className="flex justify-between items-start mb-3 gap-2">
+                <Skeleton className="h-4 w-32" />
+                <Skeleton className="h-3 w-14 shrink-0" />
+              </div>
+              <div className="space-y-2">
+                <Skeleton className="h-3 w-full" />
+                <Skeleton className="h-3 w-full" />
+                <Skeleton className="h-3 w-4/5" />
+                <Skeleton className="h-3 w-3/5" />
+              </div>
+            </div>
+          ))}
+        </div>
+      ) : (
         items.length > 0 ? (
           <div className="relative px-2 sm:px-0">
             <Slider {...sliderSettings}>

@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import Card from '../components/ui/Card';
 import SectionHeading from '../components/ui/SectionHeading';
+import Skeleton from '../components/ui/Skeleton';
 import { habilitiesApi } from '../lib/habilities';
 import type { HabilityResponse } from '../types/hability';
 import { findTechKey } from '../icons/tech.data';
@@ -28,7 +29,16 @@ const Skills = () => {
       <SectionHeading title={t('nav.skills')} />
       {error && <p className="text-sm text-red-600" role="alert">{error}</p>}
       {loading ? (
-        <p className="text-sm">{t('common.loading')}</p>
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+          {[0, 1, 2, 3, 4].map(i => (
+            <div key={i} className="rounded-lg border border-beige-200/70 bg-white/80 p-5 shadow-sm dark:border-stone-800/70 dark:bg-stone-900/70">
+              <Skeleton className="h-4 w-28 mb-4" />
+              <div className="flex flex-wrap gap-2">
+                {[0, 1, 2, 3].map(j => <Skeleton key={j} className="h-6 w-16 rounded-full" />)}
+              </div>
+            </div>
+          ))}
+        </div>
       ) : (
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
           {items.map((h, idx) => (

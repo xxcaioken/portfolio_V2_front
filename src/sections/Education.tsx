@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import Card from '../components/ui/Card';
 import SectionHeading from '../components/ui/SectionHeading';
+import Skeleton from '../components/ui/Skeleton';
 import { aditionalInfosApi } from '../lib/aditionalInfos';
 import type { AditionalInfoResponse } from '../types/aditionalInfo';
 import { formatRange } from '../lib/date';
@@ -27,7 +28,21 @@ const Education = () => {
       <SectionHeading title={t('nav.aditional') || 'Informações Adicionais'} />
       {error && <p className="text-sm text-red-600" role="alert">{error}</p>}
       {loading ? (
-        <p className="text-sm">{t('common.loading')}</p>
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+          {[0, 1].map(i => (
+            <div key={i} className="rounded-lg border border-beige-200/70 bg-white/80 p-5 shadow-sm dark:border-stone-800/70 dark:bg-stone-900/70">
+              <Skeleton className="h-4 w-40 mb-4" />
+              <div className="space-y-3">
+                {[0, 1].map(j => (
+                  <div key={j} className="flex justify-between gap-4">
+                    <Skeleton className="h-3 w-2/3" />
+                    <Skeleton className="h-3 w-16 shrink-0" />
+                  </div>
+                ))}
+              </div>
+            </div>
+          ))}
+        </div>
       ) : (
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
           {items.map((ai, idx) => (

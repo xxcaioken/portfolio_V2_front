@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import Card from '../components/ui/Card';
 import SectionHeading from '../components/ui/SectionHeading';
+import Skeleton from '../components/ui/Skeleton';
 import { experiencesApi } from '../lib/experiences';
 import type { ExperienceResponse } from '../types/experience';
 import { formatRange } from '../lib/date';
@@ -27,7 +28,21 @@ const Experience = () => {
       <SectionHeading title={t('nav.experience')} />
       {error && <p className="text-sm text-red-600" role="alert">{error}</p>}
       {loading ? (
-        <p className="text-sm">{t('common.loading')}</p>
+        <div className="space-y-4">
+          {[0, 1, 2].map(i => (
+            <div key={i} className="rounded-lg border border-beige-200/70 bg-white/80 p-5 shadow-sm dark:border-stone-800/70 dark:bg-stone-900/70">
+              <div className="flex justify-between items-center mb-3 gap-4">
+                <Skeleton className="h-4 w-52" />
+                <Skeleton className="h-3 w-24 shrink-0" />
+              </div>
+              <div className="space-y-2 pl-1">
+                <Skeleton className="h-3 w-full" />
+                <Skeleton className="h-3 w-4/5" />
+                <Skeleton className="h-3 w-2/3" />
+              </div>
+            </div>
+          ))}
+        </div>
       ) : (
         <div className="space-y-4">
           {items.map((exp, i) => (

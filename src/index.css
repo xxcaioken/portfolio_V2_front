@@ -112,6 +112,11 @@
   animation: bounce-down 1.6s ease-in-out infinite;
 }
 
+@keyframes shimmer {
+  0%   { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+
 /* Respeita preferência de movimento reduzido */
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
